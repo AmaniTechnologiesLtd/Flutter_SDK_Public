@@ -1,0 +1,42 @@
+PODS:
+  - Amani (1.2.29):
+    - IQKeyboardManagerSwift (~> 6.5.0)
+    - lottie-ios (~> 3.3.0)
+    - OpenSSL-Universal (~> 1.1.1100)
+  - amanisdk (0.0.1):
+    - Amani
+    - Flutter
+  - Flutter (1.0.0)
+  - IQKeyboardManagerSwift (6.5.10)
+  - lottie-ios (3.3.0)
+  - OpenSSL-Universal (1.1.1700)
+
+DEPENDENCIES:
+  - amanisdk (from `.symlinks/plugins/amanisdk/ios`)
+  - Flutter (from `Flutter`)
+
+SPEC REPOS:
+  https://github.com/AmaniTechnologiesLtd/Public-IOS-SDK:
+    - Amani
+  https://github.com/CocoaPods/Specs.git:
+    - IQKeyboardManagerSwift
+    - lottie-ios
+    - OpenSSL-Universal
+
+EXTERNAL SOURCES:
+  amanisdk:
+    :path: ".symlinks/plugins/amanisdk/ios"
+  Flutter:
+    :path: Flutter
+
+SPEC CHECKSUMS:
+  Amani: 70333b53cccab8b25833aa050634f10be97a41c5
+  amanisdk: 77fa4316ef09b50fb36aafd5ba408560fc9a237c
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  IQKeyboardManagerSwift: 52962c76ab33532f15ad9f3ff4e5715eda5335bb
+  lottie-ios: 6ac74dcc09904798f59b18cb3075c089d76be9ae
+  OpenSSL-Universal: ee0a7a25f2042782e2df405e66db3e429198e392
+
+PODFILE CHECKSUM: 9d765dffa7f4d36d182e09b1a6f0d9388c6b14ba
+
+COCOAPODS: 1.11.3
