@@ -1,3 +1,6 @@
+import 'dart:collection';
+import 'dart:convert';
+
 class SdkResult {
   bool isVerificationCompleted;
   bool isTokenExpired;
@@ -8,7 +11,7 @@ class SdkResult {
 
   /// This List will be filled if user canceled the KYC process,
   /// or failed the verification
-  List<dynamic>? rules;
+  Map<String, dynamic>? rules;
 
   SdkResult(this.isVerificationCompleted, this.isTokenExpired,
       this.apiExceptionCode, this.rules);
@@ -18,6 +21,6 @@ class SdkResult {
         json['isVerificationCompleted'] as bool,
         json['isTokenExpired'] as bool,
         json['apiExceptionCode'] as int?,
-        json['rules'] as List<dynamic>?);
+        jsonDecode(jsonEncode(json['rules'])) as Map<String, dynamic>?);
   }
 }
