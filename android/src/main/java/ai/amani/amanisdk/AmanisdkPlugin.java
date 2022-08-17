@@ -19,8 +19,13 @@ import io.flutter.plugin.common.PluginRegistry.ActivityResultListener;
 
 import com.amani_ai.base.Utiltiy.AppConstants;
 import com.amani_ai.base.util.Amani;
+import com.amani_ai.base.util.SessionManager;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -77,6 +82,17 @@ public class AmanisdkPlugin implements FlutterPlugin, MethodCallHandler, Activit
           resultMap.addProperty("isVerificationCompleted", Objects.requireNonNull(data).getBooleanExtra(AppConstants.ON_SUCCESS, false));
           resultMap.addProperty("isTokenExpired", Objects.requireNonNull(data).getBooleanExtra(AppConstants.TOKEN_EXPIRED, false));
           resultMap.addProperty("apiExceptionCode", Objects.requireNonNull(data).getIntExtra(AppConstants.ON_API_EXCEPTION, 1000));
+
+          Map<String, String> stepList;
+          stepList = SessionManager.getRules(binding.getActivity());
+          JsonObject stepRules = new JsonObject();
+
+          for (Map.Entry<String,String> entry : stepList.entrySet()) {
+            stepRules.addProperty(entry.getKey(), entry.getValue());
+          }
+
+          resultMap.add("rules", stepRules);
+
           callResult.success(resultMap.toString());
           return true;
         }

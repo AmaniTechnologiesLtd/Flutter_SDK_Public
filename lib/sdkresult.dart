@@ -1,21 +1,23 @@
 class SdkResult {
-  bool? isVerificationCompleted;
-  bool? isTokenExpired;
+  bool isVerificationCompleted;
+  bool isTokenExpired;
+
+  /// Due to differences in our iOS SDK this field always will be *nil* on iOS.
+  /// Use it with Platform Check.
   int? apiExceptionCode;
-  int? customerID;
+
+  /// This List will be filled if user canceled the KYC process,
+  /// or failed the verification
   List<dynamic>? rules;
-  String? problemMessage;
 
   SdkResult(this.isVerificationCompleted, this.isTokenExpired,
-      this.apiExceptionCode, this.customerID, this.rules, this.problemMessage);
+      this.apiExceptionCode, this.rules);
 
   factory SdkResult.fromJson(dynamic json) {
     return SdkResult(
-        json['isVerificationCompleted'] as bool?,
-        json['isTokenExpired'] as bool?,
+        json['isVerificationCompleted'] as bool,
+        json['isTokenExpired'] as bool,
         json['apiExceptionCode'] as int?,
-        json['customerID'] as int?,
-        json['rules'] as List<dynamic>?,
-        json['problemMessage'] as String?);
+        json['rules'] as List<dynamic>?);
   }
 }

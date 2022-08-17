@@ -65,7 +65,7 @@ extension SwiftAmanisdkPlugin: AmaniSDKDelegate {
     if let currentFlutterResult = currentFlutterResult {
       let resultData: [String: Any] = [
         "isVerificationCompleted": true,
-        "customerID": CustomerId
+        "tokenExpired": false,
       ]
       currentFlutterResult(resultToJson(dictionary: resultData))
     }
@@ -75,7 +75,7 @@ extension SwiftAmanisdkPlugin: AmaniSDKDelegate {
     if let currentFlutterResult = currentFlutterResult {
       let resultData: [String: Any] = [
         "isVerificationCompleted": false,
-        "customerID": CustomerId,
+        "tokenExpired": false,
         "rules": Rules as Any
       ]
       currentFlutterResult(resultToJson(dictionary: resultData))
@@ -98,7 +98,6 @@ extension SwiftAmanisdkPlugin: AmaniSDKDelegate {
       let resultData: [String: Any] = [
         "isVerificationCompleted": false,
         "tokenExpired": false,
-        "problemMessage": "You're disconnected from the internet"
       ]
       currentFlutterResult(resultToJson(dictionary: resultData))
     }

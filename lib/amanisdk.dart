@@ -6,6 +6,17 @@ import 'package:amanisdk/sdkresult.dart';
 import 'amanisdk_platform_interface.dart';
 
 class Amanisdk {
+  /// Starts our native android or ios sdk.
+  /// [server], [token], and [id] fields are required.
+  ///
+  /// [birthDate], [expireDate] and [documentNo] fields are grouped optionals so
+  /// you must use all of them if you use one of them.
+  ///
+  /// Any *date* format is in **YYMMDD** format.
+  ///
+  /// [email], [phone], [name] fields are related to customer profile.
+  ///
+  ///
   Future<SdkResult> startAmaniSDKWithToken({
     required String server,
     required String token,
