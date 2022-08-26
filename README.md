@@ -3,19 +3,7 @@
 This document helps you how to integrate our SDK into your Flutter project.
 
 ## Installation
-
-Add our SDK to your project’s `pubspec.yaml` file.
-
-```yaml
-amanisdk:
-    git: https://github.com/AmaniTechnologiesLtd/Flutter_SDK_Public
-```
-
-After adding our SDK to your project don't forget to run the command below to install our SDK.
-
-```bash
-$ flutter pub get
-```
+Before using our sdk you must complete the changes below. Otherwise you might encounter build issues.
 
 ## Android Gradle changes
 
@@ -157,6 +145,26 @@ For the devices that don’t support NFC (like iPhone 6), there is no CoreNFC li
 CoreNFC.framework
 CryptoKit.framework
 CryptoTokenKit.framework
+```
+
+## Adding the Flutter package
+Add our SDK to your project’s `pubspec.yaml` file.
+
+```yaml
+amanisdk:
+    git: https://github.com/AmaniTechnologiesLtd/Flutter_SDK_Public
+```
+
+After adding our SDK to your project don't forget to run the command below to install our SDK.
+
+```bash
+$ flutter pub get
+```
+
+On some rare cases, flutter pub get doesn't reinstall pods correctly. If you have build issues, cd into ios directory and run 
+
+```bash
+$ pod install
 ```
 
 ## Usage
