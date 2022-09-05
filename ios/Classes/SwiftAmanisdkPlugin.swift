@@ -65,7 +65,7 @@ extension SwiftAmanisdkPlugin: AmaniSDKDelegate {
     if let currentFlutterResult = currentFlutterResult {
       let resultData: [String: Any] = [
         "isVerificationCompleted": true,
-        "tokenExpired": false,
+        "isTokenExpired": false,
       ]
       currentFlutterResult(resultToJson(dictionary: resultData))
     }
@@ -75,7 +75,7 @@ extension SwiftAmanisdkPlugin: AmaniSDKDelegate {
     if let currentFlutterResult = currentFlutterResult {
       let resultData: [String: Any] = [
         "isVerificationCompleted": false,
-        "tokenExpired": false,
+        "isTokenExpired": false,
         "rules": Rules as Any
       ]
       currentFlutterResult(resultToJson(dictionary: resultData))
@@ -86,7 +86,7 @@ extension SwiftAmanisdkPlugin: AmaniSDKDelegate {
     if let currentFlutterResult = currentFlutterResult {
       let resultData: [String: Any] = [
         "isVerificationCompleted": false,
-        "tokenExpired": true
+        "isTokenExpired": true
       ]
       currentFlutterResult(resultToJson(dictionary: resultData))
       print("token expired")
@@ -97,7 +97,7 @@ extension SwiftAmanisdkPlugin: AmaniSDKDelegate {
     if let currentFlutterResult = currentFlutterResult {
       let resultData: [String: Any] = [
         "isVerificationCompleted": false,
-        "tokenExpired": false,
+        "isTokenExpired": false,
       ]
       currentFlutterResult(resultToJson(dictionary: resultData))
     }
