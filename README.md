@@ -68,7 +68,7 @@ platform :ios, '11.0'
 Add the SDK’s source to your podfile.
 
 ```ruby
-source "https://github.com/AmaniTechnologiesLtd/Public-IOS-SDK.git"
+source "https://github.com/AmaniTechnologiesLtd/Mobile_SDK_Repo"
 source "https://github.com/CocoaPods/Specs"
 ```
 
