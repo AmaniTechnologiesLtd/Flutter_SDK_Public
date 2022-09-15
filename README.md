@@ -102,7 +102,7 @@ You have to add these permissions into your `info.plist` file. All permissions a
 
 For NFC:
 
-```
+```xml
     <key>com.apple.developer.nfc.readersession.iso7816.select-identifiers</key>
 	<array>
 		<string>A0000002471001</string>
@@ -113,7 +113,7 @@ For NFC:
 
 For Location:
 
-```
+```xml
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This application requires access to your location to upload the document.</string>
 	<key>NSLocationUsageDescription</key>
@@ -126,7 +126,7 @@ For Location:
 
 For Camera:
 
-```
+```xml
 	<key>NSCameraUsageDescription</key>
 	<string>This application requires access to your camera for scanning and uploading the document.</string>
 ```
