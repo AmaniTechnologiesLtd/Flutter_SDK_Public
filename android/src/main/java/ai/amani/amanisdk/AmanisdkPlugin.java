@@ -77,24 +77,33 @@ public class AmanisdkPlugin implements FlutterPlugin, MethodCallHandler, Activit
     binding.addActivityResultListener(new ActivityResultListener() {
       @Override
       public boolean onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        JsonObject resultMap = new JsonObject();
         if (requestCode == 101) {
-          JsonObject resultMap = new JsonObject();
-          resultMap.addProperty("isVerificationCompleted", Objects.requireNonNull(data).getBooleanExtra(AppConstants.ON_SUCCESS, false));
-          resultMap.addProperty("isTokenExpired", Objects.requireNonNull(data).getBooleanExtra(AppConstants.TOKEN_EXPIRED, false));
-          resultMap.addProperty("apiExceptionCode", Objects.requireNonNull(data).getIntExtra(AppConstants.ON_API_EXCEPTION, 1000));
+          if (data != null) {
+            resultMap.addProperty("isVerificationCompleted", data.getBooleanExtra(AppConstants.ON_SUCCESS, false));
+            resultMap.addProperty("isTokenExpired", data.getBooleanExtra(AppConstants.TOKEN_EXPIRED, false));
+            resultMap.addProperty("apiExceptionCode", data.getIntExtra(AppConstants.ON_API_EXCEPTION, 1000));
 
-          Map<String, String> stepList;
-          stepList = SessionManager.getRules(binding.getActivity());
-          JsonObject stepRules = new JsonObject();
+            Map<String, String> stepList;
+            stepList = SessionManager.getRules(binding.getActivity());
+            JsonObject stepRules = new JsonObject();
 
-          for (Map.Entry<String,String> entry : stepList.entrySet()) {
-            stepRules.addProperty(entry.getKey(), entry.getValue());
+            for (Map.Entry<String,String> entry : stepList.entrySet()) {
+              stepRules.addProperty(entry.getKey(), entry.getValue());
+            }
+
+            resultMap.add("rules", stepRules);
+
+            callResult.success(resultMap.toString());
+            return true;
+          } else {
+            resultMap.addProperty("isVerificationCompleted", false);
+            resultMap.addProperty("isTokenExpired", false);
+            resultMap.addProperty("apiExceptionCode", 1000);
+
+            callResult.success(resultMap.toString());
+            return true;
           }
-
-          resultMap.add("rules", stepRules);
-
-          callResult.success(resultMap.toString());
-          return true;
         }
         return false;
       }
