@@ -5,6 +5,11 @@ This document helps you how to integrate our SDK into your Flutter project.
 ## Installation
 Before using our sdk you must complete the changes below. Otherwise you might encounter build issues.
 
+## Requirements
+- iOS 11 or later
+- Android API 21 or later
+- Flutter 3.0 or later
+
 ## Android Gradle changes
 
 On your module’s `build.gradle` file under the `android/app/build.gralde` add the changes below inside of `android` section.
