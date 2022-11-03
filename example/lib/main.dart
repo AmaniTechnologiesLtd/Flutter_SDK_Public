@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:amanisdk/amanisdk.dart';
-import 'package:amanisdk/sdkresult.dart';
+import 'package:amanisdk_android/amanisdk.dart';
+import 'package:amanisdk_android/sdkresult.dart';
 
 void main() {
   runApp(const MyApp());
