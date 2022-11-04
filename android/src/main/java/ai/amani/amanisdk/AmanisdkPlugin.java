@@ -84,16 +84,19 @@ public class AmanisdkPlugin implements FlutterPlugin, MethodCallHandler, Activit
             resultMap.addProperty("isTokenExpired", data.getBooleanExtra(AppConstants.TOKEN_EXPIRED, false));
             resultMap.addProperty("apiExceptionCode", data.getIntExtra(AppConstants.ON_API_EXCEPTION, 1000));
 
-            Map<String, String> stepList;
-            stepList = SessionManager.getRules(binding.getActivity());
-            JsonObject stepRules = new JsonObject();
-
-            for (Map.Entry<String,String> entry : stepList.entrySet()) {
-              stepRules.addProperty(entry.getKey(), entry.getValue());
-            }
-
-            resultMap.add("rules", stepRules);
-
+            try {
+              Map<String, String> stepList;
+              stepList = SessionManager.getRules(binding.getActivity());
+              if(stepList != null) {
+                JsonObject stepRules = new JsonObject();
+                for (Map.Entry<String,String> entry : stepList.entrySet()) {
+                  stepRules.addProperty(entry.getKey(), entry.getValue());
+                }
+                resultMap.add("rules", stepRules);
+              }
+            } catch (Exception e) {
+              Log.e("AmaniSDK", "Please make sure you've supplied correct server, correct customer token and id");
+            } 
             callResult.success(resultMap.toString());
             return true;
           } else {
