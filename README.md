@@ -155,10 +155,8 @@ CryptoTokenKit.framework
 Add our SDK to your project’s `pubspec.yaml` file.
 
 ```yaml
-amanisdk_android:
-    git: 
-      url: https://github.com/AmaniTechnologiesLtd/Flutter_SDK_Public
-      ref: android
+amanisdk:
+    git: https://github.com/AmaniTechnologiesLtd/Flutter_SDK_Public
 ```
 
 After adding our SDK to your project don't forget to run the command below to install our SDK.

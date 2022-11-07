@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io' show Platform;
 
-import 'package:amanisdk_android/sdkresult.dart';
+import 'package:amanisdk/sdkresult.dart';
 import 'amanisdk_platform_interface.dart';
 
 class Amanisdk {

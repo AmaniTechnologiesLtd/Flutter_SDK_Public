@@ -1,4 +1,4 @@
-name: amanisdk_android
+name: amanisdk
 description: A new Flutter plugin project.
 version: 0.0.3
 homepage:
@@ -36,6 +36,8 @@ flutter:
     platforms:
       android:
         package: ai.amani.amanisdk
+        pluginClass: AmanisdkPlugin
+      ios:
         pluginClass: AmanisdkPlugin
 
   # To add assets to your plugin package, add an assets section, like this:
