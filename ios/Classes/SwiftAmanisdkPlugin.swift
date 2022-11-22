@@ -20,9 +20,9 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
   }
   
   func startAmaniSDKWithToken(call: FlutterMethodCall) {
+    let useGeoLocation = (call.arguments as! [String:Any])["geoLocation"] as? Bool
     let params = call.arguments as! [String:Any]
-    print(params)
-    let customer = CustomerRequestModel(name: params["name"] as? String ?? "", email: params["email"] as? String ?? "", phone: params["phone"] as? String ?? "", idCardNumber: params["id"] as! String)
+    let customer = CustomerRequestModel(name: params["name"] as? String, email: params["email"] as? String, phone: params["phone"] as? String, idCardNumber: params["id"] as! String)
     var nvi: NviModel? = nil
     
     if let birthDate = params["birthDate"] as? String, let expireDate = params["expireDate"] as? String, let documentNo = params["documentNo"] as? String {
@@ -30,7 +30,14 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
     }
     
     nativeSDK.setDelegate(delegate: self)
-    nativeSDK.set(server: params["server"] as! String, token: params["token"] as! String, customer: customer, nvi: nvi, sharedSecret: params["sharedSecret"] as? String ?? nil, useGeoLocation: params["geolocation"] as? Bool ?? false, language: params["lang"] as? String ?? "tr")
+    nativeSDK.set(
+        server: params["server"] as! String,
+        token: params["token"] as! String,
+        customer: customer,
+        nvi: nvi,
+        sharedSecret: params["sharedSecret"] as? String ?? nil,
+        useGeoLocation: useGeoLocation ?? false,
+        language: params["lang"] as? String ?? "tr")
     
     let vc = UIApplication.shared.windows.last?.rootViewController
     DispatchQueue.main.async {

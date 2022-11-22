@@ -31,7 +31,7 @@ class Amanisdk {
     String? name,
   }) async {
     // Adds the suffix for api endpoints.
-    final String serverURL = Platform.isAndroid ? '$server/api/v1/' : server;
+    String serverURL = Platform.isAndroid ? '$server/api/v1/' : server;
 
     final callResult = await AmanisdkPlatform.instance.startAmaniSDKWithToken(
         serverURL,

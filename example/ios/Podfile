@@ -1,11 +1,10 @@
 # Uncomment this line to define a global platform for your project
 platform :ios, '11.0'
-
+source "https://github.com/AmaniTechnologiesLtd/Mobile_SDK_Repo"
+source "https://github.com/CocoaPods/Specs"
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 # Add sources for our native sdk.
-source "https://github.com/AmaniTechnologiesLtd/Public-IOS-SDK.git"
-source "https://github.com/CocoaPods/Specs"
 project 'Runner', {
   'Debug' => :debug,
   'Profile' => :release,
