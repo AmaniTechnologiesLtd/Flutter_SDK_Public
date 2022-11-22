@@ -187,12 +187,22 @@ async {
 								   server: "server_url supplied from us.",
                     token:
                         "customer token from the web server",
-                    id: "id number");
+                    id: "customer id card number"
+                    phone: "OPTIONAL phone number of customer",
+                    email: "OPTIONAL email address of customer",
+                    name: "OPTIONAL name of customer",
+                    geoLocation: false // OPTIONAL defaults to false
+                    birthDate: "OPTIONAL birthdate in YYMMDD format on the ID"
+                    expireDate: "OPTIONAL expireDate in YYMMDD format on the ID"
+                    documentNo: "OPTIONAL document number on the ID"
+                    );
    print(result);
 }
 ```
 
 In the result, there will be some general variables to check both error states, if verification is completed. If the user returns from the SDK screen, rules will be filled.
+
+**Note: You must give birthDate, expireDate, documentNo together otherwise the SDK won't start.**
 
 # How to acquire customer token for using this SDK
 1- On the server side, you need to log in with your credentials and get a token for the next steps. This token should be used only on server-side requests not used on Web SDK links.
