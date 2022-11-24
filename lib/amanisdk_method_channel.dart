@@ -40,4 +40,38 @@ class MethodChannelAmanisdk extends AmanisdkPlatform {
     });
     return resultString;
   }
+
+  @override
+  Future<String?> startAmaniSDKWithCredentials(
+    String server,
+    String loginEmail,
+    String loginPassword,
+    String id,
+    String? birthDate,
+    String? expireDate,
+    String? documentNo,
+    bool? geoLocation,
+    String? lang,
+    String? email,
+    String? phone,
+    String? name,
+  ) async {
+    // returns a json string to be converted to SdkResult class
+    final resultString = await methodChannel.invokeMethod<String?>(
+        'startAmaniSDKWithCredentials', <String, dynamic>{
+      'server': server,
+      'loginEmail': loginEmail,
+      'loginPassword': loginPassword,
+      'id': id,
+      'birthDate': birthDate,
+      'expireDate': expireDate,
+      'documentNo': documentNo,
+      'geoLocation': geoLocation,
+      'lang': lang,
+      'email': email,
+      'phone': phone,
+      'name': name,
+    });
+    return resultString;
+  }
 }

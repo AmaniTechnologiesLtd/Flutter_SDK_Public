@@ -50,4 +50,41 @@ class Amanisdk {
         SdkResult.fromJson(const JsonDecoder().convert(callResult!));
     return result;
   }
+
+  Future<SdkResult> startAmaniSDKWithCredentials({
+    required String server,
+    required String loginEmail,
+    required String loginPassword,
+    required String id,
+    String? birthDate,
+    String? expireDate,
+    String? documentNo,
+    bool? geoLocation,
+    String? lang,
+    String? email,
+    String? phone,
+    String? name,
+  }) async {
+    // Adds the suffix for api endpoints.
+    String serverURL = Platform.isAndroid ? '$server/api/v1/' : server;
+
+    final callResult = await AmanisdkPlatform.instance
+        .startAmaniSDKWithCredentials(
+            serverURL,
+            loginEmail,
+            loginPassword,
+            id,
+            birthDate,
+            expireDate,
+            documentNo,
+            geoLocation,
+            lang,
+            email,
+            phone,
+            name);
+
+    SdkResult result =
+        SdkResult.fromJson(const JsonDecoder().convert(callResult!));
+    return result;
+  }
 }

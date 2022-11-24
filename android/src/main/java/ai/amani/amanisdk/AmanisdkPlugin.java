@@ -20,16 +20,8 @@ import io.flutter.plugin.common.PluginRegistry.ActivityResultListener;
 import com.amani_ai.base.Utiltiy.AppConstants;
 import com.amani_ai.base.util.Amani;
 import com.amani_ai.base.util.SessionManager;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
-import org.json.JSONObject;
-
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 
 /** AmanisdkPlugin */
@@ -60,7 +52,11 @@ public class AmanisdkPlugin implements FlutterPlugin, MethodCallHandler, Activit
       // set the callResult, startAmaniSDK with token.
       this.callResult = result;
       this.startAmaniSDKWithToken(call);
-    } else {
+    } if (call.method.equals("startAmaniSDKWithCredentials")) {
+      this.callResult = result;
+      this.startAmaniSDKWithCreds(call);
+    }
+    else {
       result.notImplemented();
     }
   }
@@ -157,6 +153,55 @@ public class AmanisdkPlugin implements FlutterPlugin, MethodCallHandler, Activit
       Amani.goToKycActivity(this.currentActivity, call.argument("id"), call.argument("token"), lang);
     }
   }
+
+  private void startAmaniSDKWithCreds(@NonNull MethodCall call) {
+    String birthDate = null;
+    String expireDate = null;
+    String documentNo = null;
+    Boolean geoLocation = false;
+    String lang = null;
+    String email = null;
+    String phone = null;
+    String name = null;
+
+    if (call.hasArgument("birthDate")) {
+      birthDate = call.argument("birthDate");
+    }
+    if (call.hasArgument("expireDate")) {
+      expireDate = call.argument("expireDate");
+    }
+    if (call.hasArgument("documentNo")) {
+      documentNo = call.argument("documentNo");
+    }
+    if (call.hasArgument("geoLocation")) {
+      geoLocation = call.argument("geoLocation");
+    } else {
+      geoLocation = false;
+    }
+    if (call.hasArgument("lang")) {
+      lang = call.argument("lang");
+    }
+    if (call.hasArgument("email")) {
+      email = call.argument("email");
+    }
+    if (call.hasArgument("phone")) {
+      phone = call.argument("phone");
+    }
+    if (call.hasArgument("name")) {
+      name = call.argument("name");
+    }
+
+    Amani.init(this.currentContext, call.argument("server"));
+
+    if (email != null && phone != null && name != null) {
+      Amani.goToKycActivity(this.currentActivity, call.argument("id"), call.argument("loginEmail"), call.argument("loginPassword"), birthDate, expireDate, documentNo, geoLocation, lang, email, phone, name);
+    } else if (birthDate != null && expireDate != null && documentNo != null) {
+      Amani.goToKycActivity(this.currentActivity, call.argument("id"), call.argument("loginEmail"), call.argument("loginPassword"), birthDate, expireDate, documentNo, lang);
+    } else {
+      Amani.goToKycActivity(this.currentActivity, call.argument("id"), call.argument("loginEmail"), call.argument("loginPassword"), geoLocation, lang);
+    }
+  }
+
   // Keep for ActivityAware implementation
   @Override
   public void onDetachedFromActivityForConfigChanges() {}

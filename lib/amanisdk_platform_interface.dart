@@ -41,4 +41,22 @@ abstract class AmanisdkPlatform extends PlatformInterface {
     throw UnimplementedError(
         'startAmaniSDKWithToken() has not been implemented.');
   }
+
+  Future<String?> startAmaniSDKWithCredentials(
+    String server,
+    String loginEmail,
+    String loginPassword,
+    String id,
+    String? birthDate,
+    String? expireDate,
+    String? documentNo,
+    bool? geoLocation,
+    String? lang,
+    String? email,
+    String? phone,
+    String? name,
+  ) {
+    throw UnimplementedError(
+        'startAmaniSDKWithCredentials() has not been implemented.');
+  }
 }
