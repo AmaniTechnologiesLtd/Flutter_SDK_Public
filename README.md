@@ -231,10 +231,11 @@ async {
                     phone: "OPTIONAL phone number of customer",
                     email: "OPTIONAL email address of customer",
                     name: "OPTIONAL name of customer",
-                    geoLocation: false // OPTIONAL defaults to false
-                    birthDate: "OPTIONAL birthdate in YYMMDD format on the ID"
-                    expireDate: "OPTIONAL expireDate in YYMMDD format on the ID"
-                    documentNo: "OPTIONAL document number on the ID"
+                    geoLocation: false, // OPTIONAL defaults to false
+                    birthDate: "OPTIONAL birthdate in YYMMDD format on the ID",
+                    expireDate: "OPTIONAL expireDate in YYMMDD format on the ID",
+                    documentNo: "OPTIONAL document number on the ID",
+		    lang: "en" // Language code in ISO 639-1
                     );
    print(result);
 }
