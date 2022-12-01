@@ -22,7 +22,16 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
   func startAmaniSDKWithToken(call: FlutterMethodCall) {
     let useGeoLocation = (call.arguments as! [String:Any])["geoLocation"] as? Bool
     let params = call.arguments as! [String:Any]
-    let customer = CustomerRequestModel(name: params["name"] as? String, email: params["email"] as? String, phone: params["phone"] as? String, idCardNumber: params["id"] as! String)
+    var customer: CustomerRequestModel?
+    let name = params["name"] as? String
+    let email = params["email"] as? String
+    let phone = params["phone"] as? String
+      
+    if (name == nil && email == nil && phone == nil) {
+        customer = CustomerRequestModel(idCardNumber: params["id"] as! String)
+    } else {
+        customer = CustomerRequestModel(name: params["name"] as? String, email: params["email"] as? String, phone: params["phone"] as? String, idCardNumber: params["id"] as! String)
+    }
     var nvi: NviModel? = nil
     
     if let birthDate = params["birthDate"] as? String, let expireDate = params["expireDate"] as? String, let documentNo = params["documentNo"] as? String {
@@ -33,7 +42,7 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
     nativeSDK.set(
         server: params["server"] as! String,
         token: params["token"] as! String,
-        customer: customer,
+        customer: customer!,
         nvi: nvi,
         sharedSecret: params["sharedSecret"] as? String ?? nil,
         useGeoLocation: useGeoLocation ?? false,
