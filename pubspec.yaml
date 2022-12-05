@@ -1,7 +1,7 @@
 name: amanisdk
-description: A new Flutter plugin project.
-version: 0.0.3
-homepage:
+description: Flutter bindings for Amani v1 SDK's
+version: 0.0.4
+homepage: https://amani.ai/
 
 environment:
   sdk: ">=2.17.6 <3.0.0"
