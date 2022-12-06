@@ -6,8 +6,8 @@ import androidx.annotation.Nullable;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
+import io.flutter.Log;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -35,7 +35,6 @@ public class AmanisdkPlugin implements FlutterPlugin, MethodCallHandler, Activit
   private Context currentContext;
 
   // Call result to use in onActivityResult
-  private Result callResult;
 
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
@@ -47,16 +46,11 @@ public class AmanisdkPlugin implements FlutterPlugin, MethodCallHandler, Activit
 
   @Override
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
-    Log.d("AMANIFPlugin", call.method);
     if (call.method.equals("startAmaniSDKWithToken")) {
-      // set the callResult, startAmaniSDK with token.
-      this.callResult = result;
-      this.startAmaniSDKWithToken(call);
-    } if (call.method.equals("startAmaniSDKWithCredentials")) {
-      this.callResult = result;
-      this.startAmaniSDKWithCreds(call);
-    }
-    else {
+      this.startAmaniSDKWithToken(call, result);
+    } else if (call.method.equals("startAmaniSDKWithCredentials")) {
+      this.startAmaniSDKWithCreds(call, result);
+    } else {
       result.notImplemented();
     }
   }
@@ -76,6 +70,7 @@ public class AmanisdkPlugin implements FlutterPlugin, MethodCallHandler, Activit
         JsonObject resultMap = new JsonObject();
         if (requestCode == 101) {
           if (data != null) {
+            Log.d("AmaniSDK-result", data.getExtras().toString());
             resultMap.addProperty("isVerificationCompleted", data.getBooleanExtra(AppConstants.ON_SUCCESS, false));
             resultMap.addProperty("isTokenExpired", data.getBooleanExtra(AppConstants.TOKEN_EXPIRED, false));
             resultMap.addProperty("apiExceptionCode", data.getIntExtra(AppConstants.ON_API_EXCEPTION, 1000));
@@ -84,29 +79,28 @@ public class AmanisdkPlugin implements FlutterPlugin, MethodCallHandler, Activit
             stepList = SessionManager.getRules(binding.getActivity());
             JsonObject stepRules = new JsonObject();
 
-            for (Map.Entry<String,String> entry : stepList.entrySet()) {
-              stepRules.addProperty(entry.getKey(), entry.getValue());
+            if (stepList != null) {
+              for (Map.Entry<String, String> entry : stepList.entrySet()) {
+                stepRules.addProperty(entry.getKey(), entry.getValue());
+              }
             }
-
             resultMap.add("rules", stepRules);
-
-            callResult.success(resultMap.toString());
+            channel.invokeMethod("onSuccess", resultMap.toString());
             return true;
-          } else {
-            resultMap.addProperty("isVerificationCompleted", false);
-            resultMap.addProperty("isTokenExpired", false);
-            resultMap.addProperty("apiExceptionCode", 1000);
-
-            callResult.success(resultMap.toString());
-            return true;
+        } else {
+          resultMap.addProperty("isVerificationCompleted", false);
+          resultMap.addProperty("isTokenExpired", false);
+          resultMap.addProperty("apiExceptionCode", 1000);
+          channel.invokeMethod("onSuccess", resultMap.toString());
+          return true;
+            }
           }
-        }
         return false;
       }
     });
   }
 
-  private void startAmaniSDKWithToken(@NonNull MethodCall call) {
+  private void startAmaniSDKWithToken(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
     String birthDate = null;
     String expireDate = null;
     String documentNo = null;
@@ -154,7 +148,7 @@ public class AmanisdkPlugin implements FlutterPlugin, MethodCallHandler, Activit
     }
   }
 
-  private void startAmaniSDKWithCreds(@NonNull MethodCall call) {
+  private void startAmaniSDKWithCreds(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
     String birthDate = null;
     String expireDate = null;
     String documentNo = null;

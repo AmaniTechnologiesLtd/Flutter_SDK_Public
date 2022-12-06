@@ -1,16 +1,11 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'amanisdk_platform_interface.dart';
 
 /// An implementation of [AmanisdkPlatform] that uses method channels.
 class MethodChannelAmanisdk extends AmanisdkPlatform {
-  /// The method channel used to interact with the native platform.
-  @visibleForTesting
-  final methodChannel = const MethodChannel('amanisdk');
-
   @override
-  Future<String?> startAmaniSDKWithToken(
+  Future<bool?> startAmaniSDKWithToken(
     String server,
     String token,
     String id,
@@ -23,9 +18,8 @@ class MethodChannelAmanisdk extends AmanisdkPlatform {
     String? phone,
     String? name,
   ) async {
-    // returns a json string to be converted to SdkResult class
-    final resultString = await methodChannel
-        .invokeMethod<String?>('startAmaniSDKWithToken', <String, dynamic>{
+    final result = await methodChannel
+        .invokeMethod('startAmaniSDKWithToken', <String, dynamic>{
       'server': server,
       'token': token,
       'id': id,
@@ -38,11 +32,11 @@ class MethodChannelAmanisdk extends AmanisdkPlatform {
       'phone': phone,
       'name': name,
     });
-    return resultString;
+    return result;
   }
 
   @override
-  Future<String?> startAmaniSDKWithCredentials(
+  Future<bool?> startAmaniSDKWithCredentials(
     String server,
     String loginEmail,
     String loginPassword,
@@ -56,9 +50,8 @@ class MethodChannelAmanisdk extends AmanisdkPlatform {
     String? phone,
     String? name,
   ) async {
-    // returns a json string to be converted to SdkResult class
-    final resultString = await methodChannel.invokeMethod<String?>(
-        'startAmaniSDKWithCredentials', <String, dynamic>{
+    final result = await methodChannel
+        .invokeMethod('startAmaniSDKWithCredentials', <String, dynamic>{
       'server': server,
       'loginEmail': loginEmail,
       'loginPassword': loginPassword,
@@ -72,6 +65,6 @@ class MethodChannelAmanisdk extends AmanisdkPlatform {
       'phone': phone,
       'name': name,
     });
-    return resultString;
+    return result;
   }
 }

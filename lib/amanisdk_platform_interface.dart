@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:flutter/services.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'amanisdk_method_channel.dart';
@@ -25,7 +26,9 @@ abstract class AmanisdkPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> startAmaniSDKWithToken(
+  final methodChannel = const MethodChannel('amanisdk');
+
+  Future<void> startAmaniSDKWithToken(
     String server,
     String token,
     String id,
@@ -42,7 +45,7 @@ abstract class AmanisdkPlatform extends PlatformInterface {
         'startAmaniSDKWithToken() has not been implemented.');
   }
 
-  Future<String?> startAmaniSDKWithCredentials(
+  Future<void> startAmaniSDKWithCredentials(
     String server,
     String loginEmail,
     String loginPassword,
