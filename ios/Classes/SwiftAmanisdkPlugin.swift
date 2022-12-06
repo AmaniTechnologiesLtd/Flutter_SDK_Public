@@ -3,18 +3,18 @@ import UIKit
 import Amani
 
 public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
-  var currentFlutterResult: FlutterResult?
   let nativeSDK = AmaniSDK.sharedInstance
+  var channel: FlutterMethodChannel!
   
   public static func register(with registrar: FlutterPluginRegistrar) {
-    let channel = FlutterMethodChannel(name: "amanisdk", binaryMessenger: registrar.messenger())
+    let methodChannel = FlutterMethodChannel(name: "amanisdk", binaryMessenger: registrar.messenger())
     let instance = SwiftAmanisdkPlugin()
-    registrar.addMethodCallDelegate(instance, channel: channel)
+    registrar.addMethodCallDelegate(instance, channel: methodChannel)
+    instance.channel = methodChannel
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     if(call.method == "startAmaniSDKWithToken") {
-      currentFlutterResult = result
       startAmaniSDKWithToken(call: call)
     }
   }
@@ -78,48 +78,40 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
 
 extension SwiftAmanisdkPlugin: AmaniSDKDelegate {
   public func onKYCSuccess(CustomerId: Int) {
-    if let currentFlutterResult = currentFlutterResult {
       let resultData: [String: Any] = [
         "isVerificationCompleted": true,
         "isTokenExpired": false,
       ]
-      currentFlutterResult(resultToJson(dictionary: resultData))
-    }
+    channel.invokeMethod("onSuccess", arguments: resultToJson(dictionary: resultData))
   }
   
   public func onKYCFailed(CustomerId: Int, Rules: [[String : String]]?) {
-    if let currentFlutterResult = currentFlutterResult {
-      let resultData: [String: Any] = [
-        "isVerificationCompleted": false,
-        "isTokenExpired": false,
-        "rules": Rules as Any
-      ]
-      currentFlutterResult(resultToJson(dictionary: resultData))
-    }
+    let resultData: [String: Any] = [
+      "isVerificationCompleted": false,
+      "isTokenExpired": false,
+      "rules": Rules as Any
+    ]
+    channel.invokeMethod("onSuccess", arguments: resultToJson(dictionary: resultData))
   }
   
   public func onTokenExpired() {
-    if let currentFlutterResult = currentFlutterResult {
-      let resultData: [String: Any] = [
-        "isVerificationCompleted": false,
-        "isTokenExpired": true
-      ]
-      currentFlutterResult(resultToJson(dictionary: resultData))
-      print("token expired")
-    }
+    let resultData: [String: Any] = [
+      "isVerificationCompleted": false,
+      "isTokenExpired": true
+    ]
+    channel.invokeMethod("onSuccess", arguments: resultToJson(dictionary: resultData))
   }
   
   public func onNoInternetConnection() {
-    if let currentFlutterResult = currentFlutterResult {
-      let resultData: [String: Any] = [
-        "isVerificationCompleted": false,
-        "isTokenExpired": false,
-      ]
-      currentFlutterResult(resultToJson(dictionary: resultData))
-    }
+    let resultData: [String: Any] = [
+      "isVerificationCompleted": false,
+      "isTokenExpired": false,
+    ]
+    channel.invokeMethod("onSuccess", arguments: resultToJson(dictionary: resultData))
   }
   
   public func onEvent(name: String, Parameters: [String]?, type: String) {
+    // NO-OP
   }
   
 }
