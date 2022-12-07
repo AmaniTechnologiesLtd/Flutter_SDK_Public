@@ -7,7 +7,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import io.flutter.Log;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -70,7 +69,6 @@ public class AmanisdkPlugin implements FlutterPlugin, MethodCallHandler, Activit
         JsonObject resultMap = new JsonObject();
         if (requestCode == 101) {
           if (data != null) {
-            Log.d("AmaniSDK-result", data.getExtras().toString());
             resultMap.addProperty("isVerificationCompleted", data.getBooleanExtra(AppConstants.ON_SUCCESS, false));
             resultMap.addProperty("isTokenExpired", data.getBooleanExtra(AppConstants.TOKEN_EXPIRED, false));
             resultMap.addProperty("apiExceptionCode", data.getIntExtra(AppConstants.ON_API_EXCEPTION, 1000));
