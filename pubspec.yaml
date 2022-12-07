@@ -1,6 +1,6 @@
 name: amanisdk
 description: Flutter bindings for Amani v1 SDK's
-version: 0.0.4
+version: 0.0.5
 homepage: https://amani.ai/
 
 environment:

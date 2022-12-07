@@ -9,6 +9,11 @@ import 'amanisdk_platform_interface.dart';
 class Amanisdk {
   Completer<SdkResult>? _completer;
 
+  Amanisdk() {
+    AmanisdkPlatform.instance.methodChannel
+        .setMethodCallHandler(_handleInverseChannel);
+  }
+
   /// Starts our native android or ios sdk.
   /// [server], [token], and [id] fields are required.
   ///
@@ -36,7 +41,7 @@ class Amanisdk {
     // Adds the suffix for api endpoints.
     String serverURL = Platform.isAndroid ? '$server/api/v1/' : server;
 
-    await AmanisdkPlatform.instance.startAmaniSDKWithToken(
+    AmanisdkPlatform.instance.startAmaniSDKWithToken(
         serverURL,
         token,
         id,
@@ -50,18 +55,13 @@ class Amanisdk {
         name);
 
     _completer = Completer<SdkResult>();
-
-    AmanisdkPlatform.instance.methodChannel
-        .setMethodCallHandler(_handleInverseChannel);
     return _completer!.future;
   }
 
   Future<void> _handleInverseChannel(MethodCall call) async {
     switch (call.method) {
       case 'onSuccess':
-        print("RESULT FROM INVOKEMETHOD");
         final result = SdkResult.fromJson(jsonDecode(call.arguments));
-        print(result);
         _completer?.complete(result);
         break;
     }
