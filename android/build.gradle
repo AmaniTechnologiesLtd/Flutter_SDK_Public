@@ -47,7 +47,7 @@ android {
     }
 
     dependencies {
-        implementation 'ai.amani.android:AmaniAi:1.2.60'
+        implementation 'ai.amani.android:AmaniAi:1.2.61'
     }
 
     
