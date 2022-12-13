@@ -41,6 +41,20 @@ class Amanisdk {
     // Adds the suffix for api endpoints.
     String serverURL = Platform.isAndroid ? '$server/api/v1/' : server;
 
+    if (token == "") {
+      throw Exception("You can't use an empty string as token");
+    }
+
+    // Parse the JWT token and check if payload contains customer_id
+    List<String> tokenParts = token.split('.');
+    final payloadBytes = base64Decode("${tokenParts[1]}=");
+    final payloadJson = jsonDecode(utf8.decode(payloadBytes));
+
+    if (payloadJson['customer_id'] == null) {
+      throw Exception("You can't use admin token with this SDK.");
+    }
+
+    // Enjoy the ride.
     AmanisdkPlatform.instance.startAmaniSDKWithToken(
         serverURL,
         token,
@@ -64,6 +78,8 @@ class Amanisdk {
         final result = SdkResult.fromJson(jsonDecode(call.arguments));
         _completer?.complete(result);
         break;
+      case 'onError':
+        _completer?.completeError(call.arguments);
     }
   }
 
