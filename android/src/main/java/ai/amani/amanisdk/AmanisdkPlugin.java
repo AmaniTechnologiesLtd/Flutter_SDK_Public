@@ -66,6 +66,8 @@ public class AmanisdkPlugin implements FlutterPlugin, MethodCallHandler, Activit
     binding.addActivityResultListener(new ActivityResultListener() {
       @Override
       public boolean onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        try {
+
         JsonObject resultMap = new JsonObject();
         if (requestCode == 101) {
           if (data != null) {
@@ -94,8 +96,14 @@ public class AmanisdkPlugin implements FlutterPlugin, MethodCallHandler, Activit
             }
           }
         return false;
+        } catch (Exception e) {
+          channel.invokeMethod("onError", "Error happened while returning the result:" + e);
+          return false;
+        }
       }
+
     });
+
   }
 
   private void startAmaniSDKWithToken(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
