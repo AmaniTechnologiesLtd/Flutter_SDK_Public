@@ -7,7 +7,8 @@ Before using our sdk you must complete the changes below. Otherwise you might en
 
 ## Requirements
 - iOS 11 or later
-- Android API 21 or later
+- Android API 21 or later (minSDK)
+- Android compileSDKVersion 31 or later
 - Flutter 3.0 or later
 
 ## Android Gradle changes

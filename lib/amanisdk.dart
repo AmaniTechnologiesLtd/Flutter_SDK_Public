@@ -45,9 +45,13 @@ class Amanisdk {
       throw Exception("You can't use an empty string as token");
     }
 
+    if (!token.contains(".")) {
+      throw Exception("The token must be in JWT format");
+    }
+
     // Parse the JWT token and check if payload contains customer_id
     List<String> tokenParts = token.split('.');
-    final payloadBytes = base64Decode("${tokenParts[1]}=");
+    final payloadBytes = base64Decode(base64.normalize(tokenParts[1]));
     final payloadJson = jsonDecode(utf8.decode(payloadBytes));
 
     if (payloadJson['customer_id'] == null) {
