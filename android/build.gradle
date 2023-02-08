@@ -26,7 +26,7 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 33
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -47,7 +47,7 @@ android {
     }
 
     dependencies {
-        implementation 'ai.amani.android:AmaniAi:1.2.65'
+        implementation 'ai.amani.android:AmaniAi:1.2.71'
     }
 
     
