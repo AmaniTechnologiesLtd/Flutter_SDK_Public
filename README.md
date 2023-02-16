@@ -7,8 +7,8 @@ Before using our sdk you must complete the changes below. Otherwise you might en
 
 ## Requirements
 - iOS 11 or later
-- Android API 21 or later (minSDK)
-- Android compileSDKVersion 31 or later
+- Android minSDK 21 or later
+- Android compileSDKVersion 33 or later
 - Flutter 3.0 or later
 
 ## Android Gradle changes
@@ -61,6 +61,20 @@ You must add `tools:replace="android:label"` on your main android manifest file.
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
+```
+while here, you can also add the permissions
+```xml
+<uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.CAMERA" />
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+<uses-permission android:name="android.permission.ScanNFC" />
 ```
 
 ## Adding Proguard Rules
