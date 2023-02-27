@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
+import io.flutter.Log;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -146,12 +147,50 @@ public class AmanisdkPlugin implements FlutterPlugin, MethodCallHandler, Activit
     Amani.init(this.currentContext, call.argument("server"));
 
     if (email != null && phone != null && name != null) {
-      Amani.goToKycActivity(this.currentActivity, call.argument("id"), call.argument("token"), birthDate, expireDate, documentNo, geoLocation, lang, email, phone, name);
-    } else if (birthDate != null && expireDate != null && documentNo != null) {
-      Amani.goToKycActivity(this.currentActivity, call.argument("id"), call.argument("token"), birthDate, expireDate, documentNo, lang);
-    } else {
-      Amani.goToKycActivity(this.currentActivity, call.argument("id"), call.argument("token"), lang);
+      if (birthDate != null && expireDate != null && documentNo != null) {
+        Amani.goToKycActivity(
+                this.currentActivity,
+                call.argument("id"),
+                call.argument("token"),
+                birthDate,
+                expireDate,
+                documentNo,
+                geoLocation,
+                lang,
+                email,
+                phone,
+                name);
+      } else {
+        Amani.goToKycActivity(this.currentActivity,
+                call.argument("id"),
+                call.argument("token"),
+                "",
+                "",
+                "",
+                geoLocation,
+                lang,
+                email,
+                phone,
+                name);
+      }
+    }  else {
+      if (birthDate != null && expireDate != null && documentNo != null) {
+        Amani.goToKycActivity(this.currentActivity,
+                call.argument("id"),
+                call.argument("token"),
+                birthDate,
+                expireDate,
+                documentNo,
+                geoLocation,
+                lang,
+                null,
+                null,
+                null);
+      } else {
+        Amani.goToKycActivity(this.currentActivity, call.argument("id"), call.argument("token"), geoLocation, lang);
+      }
     }
+
   }
 
   private void startAmaniSDKWithCreds(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
@@ -194,11 +233,56 @@ public class AmanisdkPlugin implements FlutterPlugin, MethodCallHandler, Activit
     Amani.init(this.currentContext, call.argument("server"));
 
     if (email != null && phone != null && name != null) {
-      Amani.goToKycActivity(this.currentActivity, call.argument("id"), call.argument("loginEmail"), call.argument("loginPassword"), birthDate, expireDate, documentNo, geoLocation, lang, email, phone, name);
-    } else if (birthDate != null && expireDate != null && documentNo != null) {
-      Amani.goToKycActivity(this.currentActivity, call.argument("id"), call.argument("loginEmail"), call.argument("loginPassword"), birthDate, expireDate, documentNo, lang);
+      if (birthDate != null && expireDate != null && documentNo != null) {
+        Amani.goToKycActivity(this.currentActivity,
+                call.argument("id"),
+                call.argument("loginEmail"),
+                call.argument("loginPassword"),
+                birthDate,
+                expireDate,
+                documentNo,
+                geoLocation,
+                lang,
+                email,
+                phone,
+                name);
+      } else {
+        Amani.goToKycActivity(this.currentActivity,
+        call.argument("id"), call.argument("loginEmail"),
+        call.argument("loginPassword"),
+        "",
+        "",
+        "",
+        geoLocation,
+        lang,
+        email,
+        phone,
+        name);
+      }
     } else {
-      Amani.goToKycActivity(this.currentActivity, call.argument("id"), call.argument("loginEmail"), call.argument("loginPassword"), geoLocation, lang);
+      if (birthDate != null && expireDate != null && documentNo != null) {
+        Amani.goToKycActivity(
+                this.currentActivity,
+                call.argument("id"),
+                call.argument("loginEmail"),
+                call.argument("loginPassword"),
+                birthDate,
+                expireDate,
+                documentNo,
+                geoLocation,
+                lang,
+               null,
+                null,
+                null);
+      } else {
+        Amani.goToKycActivity(this.currentActivity,
+                call.argument("id"),
+                call.argument("loginEmail"),
+                call.argument("loginPassword"),
+                geoLocation,
+                lang
+        );
+      }
     }
   }
 

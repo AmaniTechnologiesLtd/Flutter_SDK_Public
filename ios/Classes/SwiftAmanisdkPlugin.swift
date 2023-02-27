@@ -17,6 +17,10 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
     if(call.method == "startAmaniSDKWithToken") {
       startAmaniSDKWithToken(call: call)
     }
+    
+    if (call.method == "startAmaniSDKWithCredentials") {
+      startAmaniSDKWithCredentials(call: call)
+    }
   }
   
   func startAmaniSDKWithToken(call: FlutterMethodCall) {
@@ -52,8 +56,48 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
     DispatchQueue.main.async {
       self.nativeSDK.showSDK(overParent: vc!)
     }
+  }
+  
+  func startAmaniSDKWithCredentials(call: FlutterMethodCall) {
+    let useGeoLocation = (call.arguments as! [String:Any])["geoLocation"] as? Bool
+    let params = call.arguments as! [String:Any]
+    var customer: CustomerRequestModel?
+    let name = params["name"] as? String
+    let email = params["email"] as? String
+    let phone = params["phone"] as? String
+    let loginEmail = params["loginEmail"] as? String
+    let loginPassword = params["loginPassword"] as? String
     
+      
+    if (name == nil && email == nil && phone == nil) {
+        customer = CustomerRequestModel(idCardNumber: params["id"] as! String)
+    } else {
+        customer = CustomerRequestModel(name: params["name"] as? String, email: params["email"] as? String, phone: params["phone"] as? String, idCardNumber: params["id"] as! String)
+    }
+    var nvi: NviModel? = nil
     
+    if let birthDate = params["birthDate"] as? String, let expireDate = params["expireDate"] as? String, let documentNo = params["documentNo"] as? String {
+      nvi = NviModel(documentNo: documentNo , dateOfBirth: birthDate, dateOfExpire: expireDate)
+    }
+    
+    nativeSDK.setDelegate(delegate: self)
+//    nativeSDK.set(
+//        server: params["server"] as! String,
+//        customer: customer!,
+//        nvi: nvi,
+//        sharedSecret: params["sharedSecret"] as? String ?? nil,
+//        useGeoLocation: useGeoLocation ?? false,
+//        language: params["lang"] as? String ?? "tr")
+   
+    nativeSDK.set(server: params["server"] as! String,
+                  userName: loginEmail!,
+                  password: loginPassword!,
+                  customer: customer!)
+    
+    let vc = UIApplication.shared.windows.last?.rootViewController
+    DispatchQueue.main.async {
+      self.nativeSDK.showSDK(overParent: vc!)
+    }
   }
   
   private func getTopMostController() -> UIViewController? {
