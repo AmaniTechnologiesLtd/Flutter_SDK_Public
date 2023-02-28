@@ -74,7 +74,7 @@ while here, you can also add the permissions
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-<uses-permission android:name="android.permission.ScanNFC" />
+<uses-permission android:name="android.permission.NFC" />
 ```
 
 ## Adding Proguard Rules

@@ -75,6 +75,7 @@ public class AmanisdkPlugin implements FlutterPlugin, MethodCallHandler, Activit
             resultMap.addProperty("isVerificationCompleted", data.getBooleanExtra(AppConstants.ON_SUCCESS, false));
             resultMap.addProperty("isTokenExpired", data.getBooleanExtra(AppConstants.TOKEN_EXPIRED, false));
             resultMap.addProperty("apiExceptionCode", data.getIntExtra(AppConstants.ON_API_EXCEPTION, 1000));
+            resultMap.addProperty("networkError", data.getBooleanExtra(AppConstants.ON_NETWORK_ERROR, false));
 
             Map<String, String> stepList;
             stepList = SessionManager.getRules(binding.getActivity());
@@ -92,6 +93,7 @@ public class AmanisdkPlugin implements FlutterPlugin, MethodCallHandler, Activit
           resultMap.addProperty("isVerificationCompleted", false);
           resultMap.addProperty("isTokenExpired", false);
           resultMap.addProperty("apiExceptionCode", 1000);
+          resultMap.addProperty("networkError", false);
           channel.invokeMethod("onSuccess", resultMap.toString());
           return true;
             }
