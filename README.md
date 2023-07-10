@@ -43,6 +43,14 @@ defaultConfig {
     }
 ```
 
+Also if you hadn't already, add jitpack and our jfrog under the repositories section. 
+
+```gradle
+maven { url 'https://www.jitpack.io' }
+maven {
+  url = "https://jfrog.amani.ai/artifactory/amani-sdk"
+}
+```
 ## Update your AndroidManifest.xml
 
 You must add `tools:replace="android:label"` on your main android manifest file.
