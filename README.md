@@ -6,7 +6,7 @@ This document helps you how to integrate our SDK into your Flutter project.
 Before using our sdk you must complete the changes below. Otherwise you might encounter build issues.
 
 ## Requirements
-- iOS 11 or later
+- iOS 13 or later
 - Android minSDK 21 or later
 - Android compileSDKVersion 33 or later
 - Flutter 3.0 or later
@@ -23,6 +23,10 @@ packagingOptions {
   pickFirst 'lib/arm64-v8a/libc++_shared.so'
 }
 dataBinding { enabled true }
+
+aaptOptions {
+  noCompress "tflite"
+}
 ```
 
 On the same file, update your minSdkVersion to 21 or later.
@@ -119,10 +123,10 @@ You must add the rules below to proguard file
 
 ## iOS Podfile changes
 
-Set the global platform of your project to iOS 11.0
+Set the global platform of your project to iOS 13.0
 
 ```ruby
-platform :ios, '11.0'
+platform :ios, '13.0'
 ```
 
 Add the SDK’s source to your podfile.
@@ -210,7 +214,7 @@ CryptoTokenKit.framework
 Add our SDK to your project’s `pubspec.yaml` file.
 
 ```yaml
-amanisdk:
+amani_flutter_sdk:
     git: https://github.com/AmaniTechnologiesLtd/Flutter_SDK_Public
 ```
 

@@ -1,9 +1,11 @@
 import Flutter
 import UIKit
-import Amani
+import AmaniUIv1
+import AmaniSDK
 
+@objc
 public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
-  let nativeSDK = AmaniSDK.sharedInstance
+  let nativeSDK = AmaniUIv1.sharedInstance
   var channel: FlutterMethodChannel!
   
   public static func register(with registrar: FlutterPluginRegistrar) {
@@ -12,7 +14,7 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
     registrar.addMethodCallDelegate(instance, channel: methodChannel)
     instance.channel = methodChannel
   }
-
+  
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     if(call.method == "startAmaniSDKWithToken") {
       startAmaniSDKWithToken(call: call)
@@ -30,11 +32,11 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
     let name = params["name"] as? String
     let email = params["email"] as? String
     let phone = params["phone"] as? String
-      
+    
     if (name == nil && email == nil && phone == nil) {
-        customer = CustomerRequestModel(idCardNumber: params["id"] as! String)
+      customer = CustomerRequestModel(idCardNumber: params["id"] as! String)
     } else {
-        customer = CustomerRequestModel(name: params["name"] as? String, email: params["email"] as? String, phone: params["phone"] as? String, idCardNumber: params["id"] as! String)
+      customer = CustomerRequestModel(name: params["name"] as? String, email: params["email"] as? String, phone: params["phone"] as? String, idCardNumber: params["id"] as! String)
     }
     var nvi: NviModel? = nil
     
@@ -43,18 +45,22 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
     }
     
     nativeSDK.setDelegate(delegate: self)
+    // TODO: Make v2 back end usable
     nativeSDK.set(
-        server: params["server"] as! String,
-        token: params["token"] as! String,
-        customer: customer!,
-        nvi: nvi,
-        sharedSecret: params["sharedSecret"] as? String ?? nil,
-        useGeoLocation: useGeoLocation ?? false,
-        language: params["lang"] as? String ?? "tr")
+      server: params["server"] as! String,
+      token: params["token"] as! String,
+      customer: customer!,
+      useGeoLocation: useGeoLocation ?? false,
+      language: params["lang"] as? String ?? "tr",
+      nviModel: nvi,
+      apiVersion: .v2
+    ) { (customerModel, error) in
+      // no-op
+    }
     
     let vc = UIApplication.shared.windows.last?.rootViewController
     DispatchQueue.main.async {
-      self.nativeSDK.showSDK(overParent: vc!)
+      self.nativeSDK.showSDK(on: vc!)
     }
   }
   
@@ -68,11 +74,11 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
     let loginEmail = params["loginEmail"] as? String
     let loginPassword = params["loginPassword"] as? String
     
-      
+    
     if (name == nil && email == nil && phone == nil) {
-        customer = CustomerRequestModel(idCardNumber: params["id"] as! String)
+      customer = CustomerRequestModel(idCardNumber: params["id"] as! String)
     } else {
-        customer = CustomerRequestModel(name: params["name"] as? String, email: params["email"] as? String, phone: params["phone"] as? String, idCardNumber: params["id"] as! String)
+      customer = CustomerRequestModel(name: params["name"] as? String, email: params["email"] as? String, phone: params["phone"] as? String, idCardNumber: params["id"] as! String)
     }
     var nvi: NviModel? = nil
     
@@ -80,23 +86,25 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
       nvi = NviModel(documentNo: documentNo , dateOfBirth: birthDate, dateOfExpire: expireDate)
     }
     
-    nativeSDK.setDelegate(delegate: self)
-//    nativeSDK.set(
-//        server: params["server"] as! String,
-//        customer: customer!,
-//        nvi: nvi,
-//        sharedSecret: params["sharedSecret"] as? String ?? nil,
-//        useGeoLocation: useGeoLocation ?? false,
-//        language: params["lang"] as? String ?? "tr")
-   
+    //    nativeSDK.setDelegate(delegate: self)
+    //    nativeSDK.set(
+    //        server: params["server"] as! String,
+    //        customer: customer!,
+    //        nvi: nvi,
+    //        sharedSecret: params["sharedSecret"] as? String ?? nil,
+    //        useGeoLocation: useGeoLocation ?? false,
+    //        language: params["lang"] as? String ?? "tr")
+    
     nativeSDK.set(server: params["server"] as! String,
                   userName: loginEmail!,
                   password: loginPassword!,
-                  customer: customer!)
+                  customer: customer!) { (customer, error) in
+      // no-op
+    }
     
     let vc = UIApplication.shared.windows.last?.rootViewController
     DispatchQueue.main.async {
-      self.nativeSDK.showSDK(overParent: vc!)
+      self.nativeSDK.showSDK(on: vc!)
     }
   }
   
@@ -120,16 +128,17 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
 }
 
 
-extension SwiftAmanisdkPlugin: AmaniSDKDelegate {
-  public func onKYCSuccess(CustomerId: Int) {
-      let resultData: [String: Any] = [
-        "isVerificationCompleted": true,
-        "isTokenExpired": false,
-      ]
+extension SwiftAmanisdkPlugin: AmaniUIDelegate {
+  public func onKYCSuccess(CustomerId: String) {
+    let resultData: [String: Any] = [
+      "isVerificationCompleted": true,
+      "isTokenExpired": false,
+    ]
     channel.invokeMethod("onSuccess", arguments: resultToJson(dictionary: resultData))
+    
   }
   
-  public func onKYCFailed(CustomerId: Int, Rules: [[String : String]]?) {
+  public func onKYCFailed(CustomerId: String, Rules: [[String : String]]?) {
     let resultData: [String: Any] = [
       "isVerificationCompleted": false,
       "isTokenExpired": false,
@@ -138,24 +147,5 @@ extension SwiftAmanisdkPlugin: AmaniSDKDelegate {
     channel.invokeMethod("onSuccess", arguments: resultToJson(dictionary: resultData))
   }
   
-  public func onTokenExpired() {
-    let resultData: [String: Any] = [
-      "isVerificationCompleted": false,
-      "isTokenExpired": true
-    ]
-    channel.invokeMethod("onSuccess", arguments: resultToJson(dictionary: resultData))
-  }
-  
-  public func onNoInternetConnection() {
-    let resultData: [String: Any] = [
-      "isVerificationCompleted": false,
-      "isTokenExpired": false,
-    ]
-    channel.invokeMethod("onSuccess", arguments: resultToJson(dictionary: resultData))
-  }
-  
-  public func onEvent(name: String, Parameters: [String]?, type: String) {
-    // NO-OP
-  }
-  
 }
+

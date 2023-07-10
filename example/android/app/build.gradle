@@ -85,6 +85,10 @@ android {
 
 }
 
+dependencies {
+    implementation 'ai.amani:Amani.SDK.UI:1.0.0beta3'
+}
+
 flutter {
     source '../..'
 }

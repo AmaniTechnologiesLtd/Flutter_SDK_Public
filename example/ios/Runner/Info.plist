@@ -61,5 +61,7 @@
     <string>This application requires access to NFC to  scan IDs.</string>
     <key>NSCameraUsageDescription</key>
     <string>This application requires access to your camera for scanning and uploading the document.</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 </dict>
 </plist>

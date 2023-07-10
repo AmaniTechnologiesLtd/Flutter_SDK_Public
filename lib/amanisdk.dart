@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io' show Platform;
 
-import 'package:amanisdk/sdkresult.dart';
+import 'package:amani_flutter_sdk/sdkresult.dart';
 import 'package:flutter/services.dart';
 import 'amanisdk_platform_interface.dart';
 
@@ -54,7 +54,7 @@ class Amanisdk {
     final payloadBytes = base64Decode(base64.normalize(tokenParts[1]));
     final payloadJson = jsonDecode(utf8.decode(payloadBytes));
 
-    if (payloadJson['customer_id'] == null) {
+    if (payloadJson['user_id'] == null) {
       throw Exception("You can't use admin token with this SDK.");
     }
 
