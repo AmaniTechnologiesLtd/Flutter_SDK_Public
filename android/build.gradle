@@ -50,5 +50,5 @@ android {
 }
 
 dependencies {
-    implementation 'ai.amani:Android.SDK.UI:1.0.0beta04'
+    implementation 'ai.amani:Android.SDK.UI:1.0.0beta05'
 }
