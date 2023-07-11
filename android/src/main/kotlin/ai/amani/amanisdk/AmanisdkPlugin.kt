@@ -10,6 +10,7 @@ import ai.amani.sdk.utils.ProfileStatus
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -63,15 +64,18 @@ class AmanisdkPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
         resultLauncher = (currentActivity as FlutterFragmentActivity)!!.registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
+            Log.d("Flutter Bridge", "KYC Result")
             if (result.resultCode == Activity.RESULT_OK) {
                 // There are no request codes
                 val data: Intent? = result.data
                 data?.let {
                     //Result of the KYC process
                     val kycResult: KYCResult? = it.parcelable(AppConstant.KYC_RESULT)
+                    Log.d("Flutter Bridge", "KYC Result")
                     try {
                         val resultMap = JsonObject()
                         if (data != null) {
+                            Log.d("Flutter Bridge", "KYC Result not null")
                             resultMap.addProperty(
                                 "isVerificationCompleted",
                                 kycResult!!.profileStatus == ProfileStatus.APPROVED
@@ -84,15 +88,15 @@ class AmanisdkPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
                                 "apiExceptionCode",
                                 kycResult!!.httpErrorCode,
                             )
-                            val stepList: Map<String?, String?>?
-                            stepList = SessionManager.getRules()
-                            val stepRules = JsonObject()
-                            if (stepList != null) {
-                                for ((key, value) in stepList) {
-                                    stepRules.addProperty(key, value)
-                                }
-                            }
-                            resultMap.add("rules", stepRules)
+//                            val stepList: Map<String?, String?>?
+//                            stepList = SessionManager.getRules()
+//                            val stepRules = JsonObject()
+//                            if (stepList != null) {
+//                                for ((key, value) in stepList) {
+//                                    stepRules.addProperty(key, value)
+//                                }
+//                            }
+//                            resultMap.add("rules", stepRules)
                             channel!!.invokeMethod("onSuccess", resultMap.toString())
                             true
                         } else {
