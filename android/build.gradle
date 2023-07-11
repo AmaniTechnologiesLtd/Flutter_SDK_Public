@@ -18,10 +18,14 @@ rootProject.allprojects {
         google()
         mavenCentral()
         maven { url 'https://www.jitpack.io' }
+        maven {
+            url = "https://jfrog.amani.ai/artifactory/amani-sdk"
+        }
     }
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 33
@@ -46,5 +50,5 @@ android {
 }
 
 dependencies {
-    implementation 'ai.amani:Amani.SDK.UI:1.0.0beta3'
+    implementation 'ai.amani:Android.SDK.UI:1.0.0beta04'
 }

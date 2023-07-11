@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io' show Platform;
 
 import 'package:amani_flutter_sdk/sdkresult.dart';
@@ -39,7 +40,9 @@ class Amanisdk {
     String? name,
   }) async {
     // Adds the suffix for api endpoints.
-    String serverURL = Platform.isAndroid ? '$server/api/v1/' : server;
+    // String serverURL = Platform.isAndroid ? '$server/api/v2/' : server;
+    String language = lang ?? 'tr';
+    bool location = geoLocation ?? false;
 
     if (token == "") {
       throw Exception("You can't use an empty string as token");
@@ -60,14 +63,14 @@ class Amanisdk {
 
     // Enjoy the ride.
     AmanisdkPlatform.instance.startAmaniSDKWithToken(
-        serverURL,
+        server,
         token,
         id,
         birthDate,
         expireDate,
         documentNo,
-        geoLocation,
-        lang,
+        location,
+        language,
         email,
         phone,
         name);
@@ -102,7 +105,9 @@ class Amanisdk {
     String? name,
   }) async {
     // Adds the suffix for api endpoints.
-    String serverURL = Platform.isAndroid ? '$server/api/v1/' : server;
+    String serverURL = Platform.isAndroid ? '$server/api/v2/' : server;
+    String language = lang ?? 'tr';
+    bool location = geoLocation ?? false;
 
     AmanisdkPlatform.instance.startAmaniSDKWithCredentials(
         serverURL,
@@ -112,8 +117,8 @@ class Amanisdk {
         birthDate,
         expireDate,
         documentNo,
-        geoLocation,
-        lang,
+        location,
+        language,
         email,
         phone,
         name);
