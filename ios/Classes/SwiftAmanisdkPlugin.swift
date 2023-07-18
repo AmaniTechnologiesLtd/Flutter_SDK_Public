@@ -54,13 +54,12 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
       language: params["lang"] as? String ?? "tr",
       nviModel: nvi,
       apiVersion: .v2
-    ) { (customerModel, error) in
-      // no-op
-    }
-    
+    )
     let vc = UIApplication.shared.windows.last?.rootViewController
     DispatchQueue.main.async {
-      self.nativeSDK.showSDK(on: vc!)
+      self.nativeSDK.showSDK(on: vc!) { (customerModel, error) in
+        // no-op
+      }
     }
   }
   
@@ -95,16 +94,24 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
     //        useGeoLocation: useGeoLocation ?? false,
     //        language: params["lang"] as? String ?? "tr")
     
-    nativeSDK.set(server: params["server"] as! String,
-                  userName: loginEmail!,
-                  password: loginPassword!,
-                  customer: customer!) { (customer, error) in
-      // no-op
-    }
+    nativeSDK.setDelegate(delegate: self)
+    nativeSDK.set(
+      server: params["server"] as! String,
+      userName: loginEmail!,
+      password: loginPassword!,
+      customer: customer!,
+      useGeoLocation: useGeoLocation ?? false,
+      language: params["lang"] as? String ?? "tr",
+      nviModel: nvi,
+      apiVersion: .v2
+    )
     
     let vc = UIApplication.shared.windows.last?.rootViewController
     DispatchQueue.main.async {
-      self.nativeSDK.showSDK(on: vc!)
+      // Fire up!
+      self.nativeSDK.showSDK(on: vc!) {(customerRes, error) in
+        // no-op
+      }
     }
   }
   

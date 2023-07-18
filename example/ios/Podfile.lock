@@ -3,15 +3,15 @@ PODS:
     - AmaniSDK
     - AmaniUIv1
     - Flutter
-  - AmaniSDK (3.0.0):
+  - AmaniSDK (3.0.1):
     - OpenSSL-Universal (~> 1.1.1100)
-  - AmaniUIv1 (1.0.0):
+  - AmaniUIv1 (1.0.3):
     - AmaniSDK (~> 3.0.0)
     - lottie-ios (= 3.5.0)
     - OpenSSL-Universal (~> 1.1.1100)
   - Flutter (1.0.0)
   - lottie-ios (3.5.0)
-  - OpenSSL-Universal (1.1.1100)
+  - OpenSSL-Universal (1.1.2100)
 
 DEPENDENCIES:
   - amani_flutter_sdk (from `.symlinks/plugins/amani_flutter_sdk/ios`)
@@ -33,11 +33,11 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   amani_flutter_sdk: f15750b135fa24404188a6370d4771e9757e569d
-  AmaniSDK: c2e7d29e0db9747574348c86c8d2266f4c2c7da7
-  AmaniUIv1: dc0d4940b8d9d2b16ba4f0620122eb564f82cb58
+  AmaniSDK: e44b33edea2f2fb117c780922498a3b36e32b3b4
+  AmaniUIv1: 4a4c96fc36b6ab5d1bb46bdad437c719d2b47650
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   lottie-ios: c55158d67d0629a260625cc2ded2052b829e3c3e
-  OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
+  OpenSSL-Universal: 96db2ea04174c0e3d50d93b74f0e198f980e2aa9
 
 PODFILE CHECKSUM: fd154c53aca7a30580c3fd9db9dc6d138e571897
 
