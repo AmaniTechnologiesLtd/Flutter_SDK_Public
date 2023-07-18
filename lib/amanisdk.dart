@@ -57,7 +57,7 @@ class Amanisdk {
     final payloadBytes = base64Decode(base64.normalize(tokenParts[1]));
     final payloadJson = jsonDecode(utf8.decode(payloadBytes));
 
-    if (payloadJson['user_id'] == null) {
+    if (payloadJson['profile_id'] == null) {
       throw Exception("You can't use admin token with this SDK.");
     }
 
