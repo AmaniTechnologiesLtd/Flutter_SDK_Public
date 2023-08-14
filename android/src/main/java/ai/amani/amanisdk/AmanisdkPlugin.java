@@ -128,14 +128,17 @@ public class AmanisdkPlugin implements FlutterPlugin, MethodCallHandler, Activit
     if (call.hasArgument("documentNo")) {
       documentNo = call.argument("documentNo");
     }
+
     if (call.hasArgument("geoLocation")) {
-      geoLocation = call.argument("geoLocation");
-    } else {
-      geoLocation = false;
+      if (call.argument("geoLocation") != null) {
+        geoLocation = call.argument("geoLocation");
+      }
     }
+
     if (call.hasArgument("lang")) {
       lang = call.argument("lang");
     }
+
     if (call.hasArgument("email")) {
       email = call.argument("email");
     }
