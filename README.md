@@ -8,7 +8,7 @@ Before using our sdk you must complete the changes below. Otherwise you might en
 ## Requirements
 - iOS 11 or later
 - Android minSDK 21 or later
-- Android compileSDKVersion 33 or later
+- Android compileSDKVersion 34
 - Flutter 3.0 or later
 
 ## Android Gradle changes
@@ -25,7 +25,26 @@ packagingOptions {
 dataBinding { enabled true }
 ```
 
-On the same file, update your minSdkVersion to 21 or later.
+## Android Compile Options
+
+```groovy
+  compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+```
+
+## Android Gradle Properties
+
+Disable R8 full mode, use AndroidX and enable Jetifier like below;
+
+   ```properties
+    android.enableR8.fullMode=false
+    android.useAndroidX=true
+    android.enableJetifier=true
+ ```
+
+On the same file, update your minSdkVersion 21 or later
 
 ```dart
 defaultConfig {
@@ -115,6 +134,13 @@ You must add the rules below to proguard file
 -dontwarn org.tensorflow.lite.**
 -keep class org.tensorflow.lite.support**{ *; }
 -dontwarn org.tensorflow.lite.support**
+
+-dontwarn org.conscrypt.Conscrypt$Version
+-dontwarn org.conscrypt.Conscrypt
+-dontwarn org.conscrypt.ConscryptHostnameVerifier
+-dontwarn org.openjsse.javax.net.ssl.SSLParameters
+-dontwarn org.openjsse.javax.net.ssl.SSLSocket
+-dontwarn org.openjsse.net.ssl.OpenJSSE
 ```
 
 ## iOS Podfile changes
