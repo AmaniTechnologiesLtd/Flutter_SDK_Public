@@ -1,11 +1,11 @@
 import Flutter
 import UIKit
-import AmaniUIv1
+import AmaniUI
 import AmaniSDK
 
 @objc
 public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
-  let nativeSDK = AmaniUIv1.sharedInstance
+  let nativeSDK = AmaniUI.sharedInstance
   var channel: FlutterMethodChannel!
   
   public static func register(with registrar: FlutterPluginRegistrar) {
@@ -26,8 +26,13 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
   }
   
   func startAmaniSDKWithToken(call: FlutterMethodCall) {
-    let useGeoLocation = (call.arguments as! [String:Any])["geoLocation"] as? Bool
-    let params = call.arguments as! [String:Any]
+
+      let params = call.arguments as! [String:Any]
+      //todo: location eklenecek cllocation dan.
+      //let test:CLLocation = CLLocation(coordinate: CLLocationCoordinate2D(latitude: .pi, longitude: .pi), altitude: 0, horizontalAccuracy: 0, verticalAccuracy: 0, course: 0, speed: 0, timestamp: Date(timeIntervalSinceNow: 1))
+    
+    
+   
     var customer: CustomerRequestModel?
     let name = params["name"] as? String
     let email = params["email"] as? String
@@ -50,7 +55,6 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
       server: params["server"] as! String,
       token: params["token"] as! String,
       customer: customer!,
-      useGeoLocation: useGeoLocation ?? false,
       language: params["lang"] as? String ?? "tr",
       nviModel: nvi,
       apiVersion: .v2
@@ -64,7 +68,6 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
   }
   
   func startAmaniSDKWithCredentials(call: FlutterMethodCall) {
-    let useGeoLocation = (call.arguments as! [String:Any])["geoLocation"] as? Bool
     let params = call.arguments as! [String:Any]
     var customer: CustomerRequestModel?
     let name = params["name"] as? String
@@ -91,7 +94,6 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
     //        customer: customer!,
     //        nvi: nvi,
     //        sharedSecret: params["sharedSecret"] as? String ?? nil,
-    //        useGeoLocation: useGeoLocation ?? false,
     //        language: params["lang"] as? String ?? "tr")
     
     nativeSDK.setDelegate(delegate: self)
@@ -100,7 +102,6 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
       userName: loginEmail!,
       password: loginPassword!,
       customer: customer!,
-      useGeoLocation: useGeoLocation ?? false,
       language: params["lang"] as? String ?? "tr",
       nviModel: nvi,
       apiVersion: .v2
@@ -153,6 +154,16 @@ extension SwiftAmanisdkPlugin: AmaniUIDelegate {
     ]
     channel.invokeMethod("onSuccess", arguments: resultToJson(dictionary: resultData))
   }
+
+  public func onError(type:String,Error:[AmaniError]){
+    let resultData: [String:Any] = [
+      "isVerificationCompleted": false,
+      "isTokenExpired": false,
+      "rules": Error as Any
+    ]
+    channel.invokeMethod("onError",arguments: resultToJson(dictionary:resultData))
+  }
+
   
 }
 
