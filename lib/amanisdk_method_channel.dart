@@ -1,5 +1,3 @@
-import 'package:flutter/services.dart';
-
 import 'amanisdk_platform_interface.dart';
 
 /// An implementation of [AmanisdkPlatform] that uses method channels.

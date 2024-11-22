@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class SdkResult {
   bool isVerificationCompleted;
   bool isTokenExpired;
