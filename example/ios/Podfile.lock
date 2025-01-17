@@ -1,44 +1,45 @@
 PODS:
   - amani_flutter_sdk (0.0.11):
     - AmaniSDK
-    - AmaniUIv1
+    - AmaniUI
     - Flutter
-  - AmaniSDK (3.0.1):
-    - OpenSSL-Universal (~> 1.1.1100)
-  - AmaniUIv1 (1.0.3):
-    - AmaniSDK (~> 3.0.0)
-    - lottie-ios (= 3.5.0)
-    - OpenSSL-Universal (~> 1.1.1100)
+  - AmaniOpenSSL (1.1.2000)
+  - AmaniSDK (3.4.3):
+    - AmaniOpenSSL (~> 1.1.2000)
+  - AmaniUI (1.9.0):
+    - AmaniSDK (~> 3.4)
+    - lottie-ios (~> 4.4.1)
   - Flutter (1.0.0)
-  - lottie-ios (3.5.0)
-  - OpenSSL-Universal (1.1.2100)
+  - lottie-ios (4.4.3)
 
 DEPENDENCIES:
   - amani_flutter_sdk (from `.symlinks/plugins/amani_flutter_sdk/ios`)
+  - AmaniUI (from `../../../IOS.SDK.UI`)
   - Flutter (from `Flutter`)
 
 SPEC REPOS:
   https://github.com/AmaniTechnologiesLtd/Mobile_SDK_Repo:
+    - AmaniOpenSSL
     - AmaniSDK
-    - AmaniUIv1
   https://github.com/CocoaPods/Specs:
     - lottie-ios
-    - OpenSSL-Universal
 
 EXTERNAL SOURCES:
   amani_flutter_sdk:
     :path: ".symlinks/plugins/amani_flutter_sdk/ios"
+  AmaniUI:
+    :path: "../../../IOS.SDK.UI"
   Flutter:
     :path: Flutter
 
 SPEC CHECKSUMS:
-  amani_flutter_sdk: f15750b135fa24404188a6370d4771e9757e569d
-  AmaniSDK: e44b33edea2f2fb117c780922498a3b36e32b3b4
-  AmaniUIv1: 4a4c96fc36b6ab5d1bb46bdad437c719d2b47650
-  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
-  lottie-ios: c55158d67d0629a260625cc2ded2052b829e3c3e
-  OpenSSL-Universal: 96db2ea04174c0e3d50d93b74f0e198f980e2aa9
+  amani_flutter_sdk: 6ada51f4a0878a528a07229389ca4ce9fbed6d6a
+  AmaniOpenSSL: 7a1714c32d10145b6a54ec63a713cf5b71af0159
+  AmaniSDK: 99768d57c108d1792ca9757b3a30cf5fe64970a4
+  AmaniUI: be3ea69b274b2b69cc7469443b366384ce5cdea7
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  lottie-ios: fcb5e73e17ba4c983140b7d21095c834b3087418
 
-PODFILE CHECKSUM: fd154c53aca7a30580c3fd9db9dc6d138e571897
+PODFILE CHECKSUM: fbef1eeeb7b9cc2842667a614015d5eb33174ec3
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.16.2

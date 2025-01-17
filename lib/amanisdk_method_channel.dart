@@ -15,6 +15,7 @@ class MethodChannelAmanisdk extends AmanisdkPlatform {
     String? email,
     String? phone,
     String? name,
+    String apiVersion,
   ) async {
     final result = await methodChannel
         .invokeMethod('startAmaniSDKWithToken', <String, dynamic>{
@@ -29,6 +30,7 @@ class MethodChannelAmanisdk extends AmanisdkPlatform {
       'email': email,
       'phone': phone,
       'name': name,
+      'apiVersion': apiVersion,
     });
     return result;
   }

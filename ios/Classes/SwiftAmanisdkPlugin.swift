@@ -26,7 +26,7 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
   }
   
   func startAmaniSDKWithToken(call: FlutterMethodCall) {
-
+       var apiVersion: ApiVersions = .v2
       let params = call.arguments as! [String:Any]
       //todo: location eklenecek cllocation dan.
       //let test:CLLocation = CLLocation(coordinate: CLLocationCoordinate2D(latitude: .pi, longitude: .pi), altitude: 0, horizontalAccuracy: 0, verticalAccuracy: 0, course: 0, speed: 0, timestamp: Date(timeIntervalSinceNow: 1))
@@ -37,6 +37,10 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
     let name = params["name"] as? String
     let email = params["email"] as? String
     let phone = params["phone"] as? String
+
+    if let apiVers = params["apiVersion"] as? String, apiVers == "v1" {
+      apiVersion = .v1
+    } 
     
     if (name == nil && email == nil && phone == nil) {
       customer = CustomerRequestModel(idCardNumber: params["id"] as! String)
@@ -57,7 +61,7 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
       customer: customer!,
       language: params["lang"] as? String ?? "tr",
       nviModel: nvi,
-      apiVersion: .v2
+      apiVersion: apiVersion
     )
     let vc = UIApplication.shared.windows.last?.rootViewController
     DispatchQueue.main.async {

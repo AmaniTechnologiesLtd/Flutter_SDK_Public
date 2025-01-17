@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io' show Platform;
 
 import 'package:amani_flutter_sdk/sdkresult.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'amanisdk_platform_interface.dart';
 
@@ -42,6 +43,7 @@ class Amanisdk {
     // String serverURL = Platform.isAndroid ? '$server/api/v2/' : server;
     String language = lang ?? 'tr';
     bool location = geoLocation ?? false;
+    String apiVersion = 'v2';
 
     if (token == "") {
       throw Exception("You can't use an empty string as token");
@@ -55,12 +57,14 @@ class Amanisdk {
     List<String> tokenParts = token.split('.');
     final payloadBytes = base64Decode(base64.normalize(tokenParts[1]));
     final payloadJson = jsonDecode(utf8.decode(payloadBytes));
-
-    if (payloadJson['profile_id'] == null) {
+   
+    if (payloadJson['customer_id'] != null) {
+      apiVersion = 'v1';
+    } else if (payloadJson['profile_id'] == null) {
       throw Exception("You can't use admin token with this SDK.");
     }
 
-    // Enjoy the ride.
+    // Enjoy the ride.  
     AmanisdkPlatform.instance.startAmaniSDKWithToken(
         server,
         token,
@@ -72,7 +76,9 @@ class Amanisdk {
         language,
         email,
         phone,
-        name);
+        name,
+        apiVersion,
+        );
 
     _completer = Completer<SdkResult>();
     return _completer!.future;
