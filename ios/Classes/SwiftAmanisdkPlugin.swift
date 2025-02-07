@@ -24,6 +24,39 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
       startAmaniSDKWithCredentials(call: call)
     }
   }
+
+  // func setSSLPinning(call: FlutterMethodCall) async {
+  //   let params = call.arguments as! [String:Any]
+  //   let certificateURL: URL
+
+  //  if let cerPathURL = params["certificate"] as? String {
+  //   certificateURL = URL(string: cerPathURL)
+  //    do {
+  //     try? await nativeSDK.setSSLPinning(certificate: certificateURL)
+  //    }catch(let error) {
+  //     debugPrint(error)
+  //     }
+
+  //  } 
+  // }
+
+ func setSSLPinning(call: FlutterMethodCall) async {
+    let params = call.arguments as! [String: Any]
+    do {
+        if let certificate = params["certificate"] as? String {
+            guard let cerUrl = URL(string: certificate) else {
+                debugPrint("can't convert to URL")
+                return
+            }
+            debugPrint(cerUrl)
+            try? await nativeSDK.setSSLPinning(certificate: cerUrl) // Burada direkt cerUrl kullanılıyor
+        } else {
+            debugPrint("can't find certificate")
+        }
+    } catch {
+        debugPrint("ssl pinning setlenemedi. \(error)")
+    }
+}
   
   func startAmaniSDKWithToken(call: FlutterMethodCall) {
        var apiVersion: ApiVersions = .v2

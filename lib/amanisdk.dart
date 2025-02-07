@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io' show Platform;
 
 import 'package:amani_flutter_sdk/sdkresult.dart';
@@ -130,5 +131,11 @@ class Amanisdk {
 
     _completer = Completer<SdkResult>();
     return _completer!.future;
+  }
+
+  Future<void> setSSLPinning(
+    String? certificate,
+  ) async {
+   AmanisdkPlatform.instance.setSSLPinning(certificate);
   }
 }

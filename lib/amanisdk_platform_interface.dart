@@ -61,4 +61,12 @@ abstract class AmanisdkPlatform extends PlatformInterface {
     throw UnimplementedError(
         'startAmaniSDKWithCredentials() has not been implemented.');
   }
+
+  Future<void> setSSLPinning(
+    String? certificate,
+  ) async {
+    throw UnimplementedError(
+      "SSL certificate can't get path url."
+    );
+  }
 }

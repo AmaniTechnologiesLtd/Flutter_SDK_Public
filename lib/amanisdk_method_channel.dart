@@ -67,4 +67,15 @@ class MethodChannelAmanisdk extends AmanisdkPlatform {
     });
     return result;
   }
+
+  Future<void> setSSLPinning(
+    String? certificate
+  ) async {
+     final result = await methodChannel
+        .invokeMethod('startAmaniSDKWithToken', <String, dynamic>{
+          'certificate': certificate
+        });
+
+      return result;
+  }
 }
