@@ -1,7 +1,7 @@
 # Uncomment this line to define a global platform for your project
 platform :ios, '13.0'
 source "https://github.com/AmaniTechnologiesLtd/Mobile_SDK_Repo"
-source "https://github.com/CocoaPods/Specs"
+source "https://cdn.cocoapods.org"
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 # Add sources for our native sdk.
@@ -31,7 +31,6 @@ flutter_ios_podfile_setup
 target 'Runner' do
   use_frameworks!
   use_modular_headers!
-  pod 'AmaniUI', :path => '../../../IOS.SDK.UI'
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
@@ -42,7 +41,7 @@ post_install do |installer|
     # Required by amani sdk.
     target.build_configurations.each do |config|
       config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
-      config.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET'
+#       config.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET'
     end
   end
 end

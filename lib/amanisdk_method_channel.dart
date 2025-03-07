@@ -72,7 +72,7 @@ class MethodChannelAmanisdk extends AmanisdkPlatform {
     String? certificate
   ) async {
      final result = await methodChannel
-        .invokeMethod('startAmaniSDKWithToken', <String, dynamic>{
+        .invokeMethod('SSLcertificate', <String, dynamic>{
           'certificate': certificate
         });
 

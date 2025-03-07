@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'amani_flutter_sdk'
-  s.version          = '0.0.11'
+  s.version          = '0.0.15'
   s.summary          = 'Flutter bindings for our native sdks'
   s.description      = <<-DESC
   Amani Ai SDK Flutter bindings.
@@ -15,8 +15,8 @@ Pod::Spec.new do |s|
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.dependency 'AmaniSDK'
-  s.dependency 'AmaniUI'
+  s.dependency 'AmaniSDK', '~>3.4.7'
+  s.dependency 'AmaniUI', '~>1.2.4'
   s.platform = :ios, '13.0'
 
   # Flutter.framework does not contain a i386 slice.

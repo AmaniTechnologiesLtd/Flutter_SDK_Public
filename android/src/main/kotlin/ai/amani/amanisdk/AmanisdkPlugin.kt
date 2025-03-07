@@ -82,11 +82,11 @@ class AmanisdkPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
                             )
                             resultMap.addProperty(
                                 "isTokenExpired",
-                                kycResult!!.httpErrorCode == 403
+                                kycResult!!.errorCode == 403
                             )
                             resultMap.addProperty(
                                 "apiExceptionCode",
-                                kycResult!!.httpErrorCode,
+                                kycResult!!.errorCode,
                             )
 //                            val stepList: Map<String?, String?>?
 //                            stepList = SessionManager.getRules()
@@ -126,6 +126,7 @@ class AmanisdkPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
         var email: String? = null
         var phone: String? = null
         var name: String? = null
+        var apiVersion: AmaniVersion = AmaniVersion.V2
         if (call.hasArgument("birthDate")) {
             birthDate = call.argument<String>("birthDate")
         }
@@ -152,10 +153,16 @@ class AmanisdkPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
         if (call.hasArgument("name")) {
             name = call.argument<String>("name")
         }
+        if (call.hasArgument("apiVersion")){
+            var apiVersionString = call.argument<String>("apiVersion")
+            if (apiVersionString == "v1") {
+                apiVersion = AmaniVersion.V1
+            }
+        }
         AmaniSDKUI.init(
-            activity = currentActivity!!,
+            applicationContext = currentActivity!!,
             serverURL = call.argument("server")!!,
-            amaniVersion = AmaniVersion.V2,
+            amaniVersion = apiVersion,
         )
         if (email != null && phone != null && name != null) {
             if (birthDate != null && expireDate != null && documentNo != null) {

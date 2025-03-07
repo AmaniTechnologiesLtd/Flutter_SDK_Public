@@ -16,6 +16,7 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
   }
   
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+    debugPrint("handle fonksiyonuna geldi ve \(call.method)")
     if(call.method == "startAmaniSDKWithToken") {
       startAmaniSDKWithToken(call: call)
     }
@@ -23,7 +24,16 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
     if (call.method == "startAmaniSDKWithCredentials") {
       startAmaniSDKWithCredentials(call: call)
     }
-  }
+    if (call.method == "SSLcertificate") {
+      DispatchQueue.global(qos: .userInitiated).async {
+        Task {
+            await self.setSSLPinning(call: call)
+        }
+      }
+    }
+    
+    } 
+  
 
   // func setSSLPinning(call: FlutterMethodCall) async {
   //   let params = call.arguments as! [String:Any]
@@ -44,6 +54,7 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
     let params = call.arguments as! [String: Any]
     do {
         if let certificate = params["certificate"] as? String {
+          debugPrint("parametre olarak gönderdiğim değer \(certificate)")
             guard let cerUrl = URL(string: certificate) else {
                 debugPrint("can't convert to URL")
                 return
