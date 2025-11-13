@@ -32,6 +32,7 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
    }
 
 android {
+    namespace = "amanisdk_example"
     compileSdk 35
     ndkVersion flutter.ndkVersion
 
@@ -41,6 +42,11 @@ android {
     }
     kotlinOptions {
         jvmTarget = '17'
+    }
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
     }
 
     defaultConfig {
@@ -52,6 +58,8 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         ndkVersion = "27.1.12297006"
+
+
     }
 
     signingConfigs {
@@ -77,12 +85,29 @@ android {
         }
     }
 
-    packagingOptions {
-        pickFirst 'lib/x86/libc++_shared.so'
-        pickFirst 'lib/x86_64/libc++_shared.so'
-        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
-        pickFirst 'lib/arm64-v8a/libc++_shared.so'
+    packaging {
+    resources {
+      // Sadece çakışan dosyayı dışla
+      excludes += ["META-INF/versions/9/OSGI-INF/MANIFEST.MF"]
+      // Gerekirse genişletilebilir:
+      // excludes += ["META-INF/versions/9/OSGI-INF/*"]
     }
+    jniLibs {
+      pickFirsts += [
+        "lib/x86/libc++_shared.so",
+        "lib/x86_64/libc++_shared.so",
+        "lib/armeabi-v7a/libc++_shared.so",
+        "lib/arm64-v8a/libc++_shared.so"
+      ]
+    }
+    }
+
+    // packagingOptions {
+    //     pickFirst 'lib/x86/libc++_shared.so'
+    //     pickFirst 'lib/x86_64/libc++_shared.so'
+    //     pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+    //     pickFirst 'lib/arm64-v8a/libc++_shared.so'
+    // }
 
     dataBinding { enabled true  }
     namespace 'ai.amani.amanisdk_example'
