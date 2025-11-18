@@ -1,3 +1,4 @@
+import 'package:amani_flutter_sdk/amaniAndroidConfigure.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:flutter/services.dart';
@@ -43,12 +44,36 @@ class _MyAppState extends State<MyApp> {
                 //   print('Dosya Yolu: $filePath');
 
                 // _amanisdkPlugin.setSSLPinning(filePath);
+                if(Platform.isAndroid) {
+                  await _amanisdkPlugin.configure(
+                  server: "",
+                  enabledFeatures: const [
+                    AmaniFeature.idCapture,
+                    AmaniFeature.idHologramDetection,
+                    AmaniFeature.nfcScan,
+                    AmaniFeature.selfieAuto,
+                    AmaniFeature.selfiePoseEstimation,
+                  ],
+                );
 
-                var result = await _amanisdkPlugin.startAmaniSDKWithToken(
-                    server: "https://example.amani.ai",
-                    token: "customer profile token",
-                    id: "customer id card number");
+                final result = await _amanisdkPlugin.startAmaniSDKConfigurable(
+                  token: "",
+                  id: "",
+                  
+                  // geoLocation: true,
+                  // lang: "tr",
+                );
+
                 print(result.isTokenExpired);
+
+                } else {
+                    var result = await _amanisdkPlugin.startAmaniSDKWithToken(
+                    server: "",
+                    token: "",
+                    id: "");
+                   print(result.isTokenExpired);
+                }
+              
               }),
         ),
       ),

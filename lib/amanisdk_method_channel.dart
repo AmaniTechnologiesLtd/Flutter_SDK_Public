@@ -2,6 +2,51 @@ import 'amanisdk_platform_interface.dart';
 
 /// An implementation of [AmanisdkPlatform] that uses method channels.
 class MethodChannelAmanisdk extends AmanisdkPlatform {
+
+  @override
+  Future<void> configure({
+    required String server,
+    required List<String> enabledFeatures,
+  }) async {
+    await methodChannel.invokeMethod('configure', <String, dynamic>{
+      'server': server,
+      'enabledFeatures': enabledFeatures,
+     
+    });
+  }
+
+  @override
+  Future<bool?> startAmaniSDKConfigurable(
+    String token,
+    String id,
+    String? birthDate,
+    String? expireDate,
+    String? documentNo,
+    bool geoLocation,
+    String? language,
+    String? email,
+    String? phone,
+    String? name,
+  ) async {
+    final result = await methodChannel.invokeMethod(
+      'startAmaniSDKConfigurable',
+      <String, dynamic>{
+        'token': token,
+        'id': id,
+        'birthDate': birthDate,
+        'expireDate': expireDate,
+        'documentNo': documentNo,
+        'geoLocation': geoLocation,
+        'lang': language,
+        'email': email,
+        'phone': phone,
+        'name': name,
+      },
+    );
+    return result;
+  }
+
+
   @override
   Future<bool?> startAmaniSDKWithToken(
     String server,

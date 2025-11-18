@@ -7,6 +7,8 @@ import ai.amani.base.utility.AppConstants
 import ai.amani.sdk.model.KYCResult
 import ai.amani.sdk.utils.AppConstant
 import ai.amani.sdk.utils.ProfileStatus
+import ai.amani.sdk.DynamicFeature
+import ai.amani.sdk.UploadSource
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -34,6 +36,7 @@ class AmanisdkPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
     private var currentActivity: Activity? = null
     private var currentContext: Context? = null
     private var resultLauncher: ActivityResultLauncher<Intent>? = null
+    private var isConfigured: Boolean = false
 
     // Call result to use in onActivityResult
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
@@ -48,6 +51,10 @@ class AmanisdkPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
         } else if (call.method == "startAmaniSDKWithCredentials") {
 //            startAmaniSDKWithCreds(call, result)
             result.notImplemented()
+        } else if (call.method == "configure") {
+            configure(call, result)
+        } else if (call.method == "startAmaniSDKConfigurable") {
+           startAmaniSDKConfigurable(call, result)
         } else {
             result.notImplemented()
         }
@@ -116,6 +123,193 @@ class AmanisdkPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
             }
         }
     }
+
+    private fun configure(call: MethodCall, result: MethodChannel.Result) {
+    val context = currentContext
+    if (context == null) {
+        result.error("NO_CONTEXT", "Current context is null. Plugin is not attached to engine.", null)
+        return
+    }
+
+    val server = call.argument<String>("server")
+    if (server.isNullOrBlank()) {
+        result.error("INVALID_ARGUMENT", "Argument 'server' must not be null or empty.", null)
+        return
+    }
+
+   
+    val features = call.argument<List<String>>("enabledFeatures") ?: emptyList()
+
+    val dynamicFeatures = features.mapNotNull { featureName ->
+        when (featureName) {
+            "idCapture" -> DynamicFeature.ID_CAPTURE
+            "idHologramDetection" -> DynamicFeature.ID_HOLOGRAM_DETECTION
+            "nfcScan" -> DynamicFeature.NFC_SCAN
+            "selfieAuto" -> DynamicFeature.SELFIE_AUTO
+            "selfiePoseEstimation" -> DynamicFeature.SELFIE_POSE_ESTIMATION
+            else -> null 
+        }
+    }
+
+    
+    val sharedSecret = call.argument<String>("sharedSecret")
+    val uploadSourceString = call.argument<String>("uploadSource")
+    val uploadSource = when (uploadSourceString) {
+        "VIDEO" -> UploadSource.VIDEO
+        "PASSWORD" -> UploadSource.PASSWORD
+        "KYC", null -> UploadSource.KYC
+        else -> UploadSource.KYC
+    }
+
+    val apiVersionString = call.argument<String>("apiVersion")
+    val amaniVersion = when (apiVersionString) {
+        "v1" -> AmaniVersion.V1
+        "v2", null -> AmaniVersion.V2
+        else -> AmaniVersion.V2
+    }
+
+    try {
+        AmaniSDKUI.configure(
+            applicationContext = context,
+            serverURL = server,
+            sharedSecret = sharedSecret,          
+            amaniVersion = amaniVersion,
+            uploadSource = uploadSource,
+            enabledFeatures = dynamicFeatures    
+        )
+        isConfigured = true
+        result.success(null)
+    } catch (e: Exception) {
+        result.error("CONFIGURE_FAILED", "AmaniSDKUI.configure failed: ${e.message}", null)
+    }
+}
+
+
+private fun startAmaniSDKConfigurable(call: MethodCall, result: MethodChannel.Result) {
+    if (!isConfigured) {
+      
+        result.error(
+            "NOT_CONFIGURED",
+            "AmaniSDKUI is not configured. Call 'configure' before starting KYC.",
+            null
+        )
+        return
+    }
+
+    val activity = currentActivity
+    val launcher = resultLauncher
+    if (activity == null || launcher == null) {
+        result.error("NO_ACTIVITY", "Current Activity or resultLauncher is null.", null)
+        return
+    }
+
+
+    var birthDate: String? = null
+    var expireDate: String? = null
+    var documentNo: String? = null
+    var geoLocation = false
+    var lang: String? = null
+    var email: String? = null
+    var phone: String? = null
+    var name: String? = null
+
+    if (call.hasArgument("birthDate")) {
+        birthDate = call.argument<String>("birthDate")
+    }
+    if (call.hasArgument("expireDate")) {
+        expireDate = call.argument<String>("expireDate")
+    }
+    if (call.hasArgument("documentNo")) {
+        documentNo = call.argument<String>("documentNo")
+    }
+    geoLocation = if (call.hasArgument("geoLocation")) {
+        call.argument<Boolean>("geoLocation") ?: false
+    } else {
+        false
+    }
+    if (call.hasArgument("lang")) {
+        lang = call.argument<String>("lang")
+    }
+    if (call.hasArgument("email")) {
+        email = call.argument<String>("email")
+    }
+    if (call.hasArgument("phone")) {
+        phone = call.argument<String>("phone")
+    }
+    if (call.hasArgument("name")) {
+        name = call.argument<String>("name")
+    }
+
+    val idNumber = call.argument<String>("id")
+    val token = call.argument<String>("token")
+
+    if (idNumber.isNullOrBlank() || token.isNullOrBlank()) {
+        result.error("INVALID_ARGUMENT", "Arguments 'id' and 'token' must not be null or empty.", null)
+        return
+    }
+
+    result.success(null)
+
+    if (email != null && phone != null && name != null) {
+        if (birthDate != null && expireDate != null && documentNo != null) {
+            AmaniSDKUI.goToKycActivity(
+                activity = activity as ComponentActivity,
+                resultLauncher = launcher,
+                idNumber = idNumber,
+                authToken = token,
+                language = lang ?: "tr",
+                geoLocation = geoLocation,
+                birthDate = birthDate,
+                expireDate = expireDate,
+                documentNumber = documentNo,
+                userEmail = email,
+                userPhoneNumber = phone,
+                userFullName = name
+            )
+        } else {
+            AmaniSDKUI.goToKycActivity(
+                activity = activity as ComponentActivity,
+                resultLauncher = launcher,
+                idNumber = idNumber,
+                authToken = token,
+                language = lang ?: "tr",
+                geoLocation = geoLocation,
+                birthDate = null,
+                expireDate = null,
+                documentNumber = null,
+                userEmail = email,
+                userPhoneNumber = phone,
+                userFullName = name
+            )
+        }
+    } else {
+        if (birthDate != null && expireDate != null && documentNo != null) {
+            AmaniSDKUI.goToKycActivity(
+                activity = activity as ComponentActivity,
+                resultLauncher = launcher,
+                idNumber = idNumber,
+                authToken = token,
+                language = lang ?: "tr",
+                geoLocation = geoLocation,
+                birthDate = birthDate,
+                expireDate = expireDate,
+                documentNumber = documentNo,
+                userEmail = null,
+                userPhoneNumber = null,
+                userFullName = null
+            )
+        } else {
+            AmaniSDKUI.goToKycActivity(
+                activity = activity,
+                resultLauncher = launcher,
+                idNumber = idNumber,
+                authToken = token
+            )
+        }
+    }
+}
+
+
 
     private fun startAmaniSDKWithToken(call: MethodCall, result: MethodChannel.Result) {
         var birthDate: String? = null

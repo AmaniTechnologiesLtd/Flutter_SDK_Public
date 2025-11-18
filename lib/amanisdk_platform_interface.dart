@@ -26,6 +26,30 @@ abstract class AmanisdkPlatform extends PlatformInterface {
 
   final methodChannel = const MethodChannel('amanisdk');
 
+   Future<void> configure({
+    required String server,
+    required List<String> enabledFeatures,
+  }) {
+    throw UnimplementedError('configure() has not been implemented.');
+  }
+
+  Future<bool?> startAmaniSDKConfigurable(
+    String token,
+    String id,
+    String? birthDate,
+    String? expireDate,
+    String? documentNo,
+    bool geoLocation,
+    String? language,
+    String? email,
+    String? phone,
+    String? name,
+  ) {
+    throw UnimplementedError(
+      'startAmaniSDKConfigurable() has not been implemented.',
+    );
+  }
+
   Future<void> startAmaniSDKWithToken(
     String server,
     String token,

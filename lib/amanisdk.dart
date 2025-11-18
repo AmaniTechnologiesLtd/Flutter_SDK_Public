@@ -6,6 +6,7 @@ import 'dart:io' show Platform;
 import 'package:amani_flutter_sdk/sdkresult.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'amaniAndroidConfigure.dart';
 import 'amanisdk_platform_interface.dart';
 
 class Amanisdk {
@@ -27,6 +28,73 @@ class Amanisdk {
   /// [email], [phone], [name] fields are related to customer profile.
   ///
   ///
+  /// 
+  /// 
+  
+  Future<void> configure({
+    required String server,
+    List<AmaniFeature> enabledFeatures = const [],
+  }) async {
+    await AmanisdkPlatform.instance.configure(
+      server: server,
+      enabledFeatures: enabledFeatures.map((e) => e.name).toList(),
+    );
+    // _isConfigured = true;
+  }
+
+    Future<SdkResult> startAmaniSDKConfigurable({
+    required String token,
+    required String id,
+    String? birthDate,
+    String? expireDate,
+    String? documentNo,
+    bool geoLocation = false,
+    String? lang,
+    String? email,
+    String? phone,
+    String? name,
+  }) async {
+    
+    if (token.isEmpty) {
+      throw Exception("You can't use an empty string as token");
+    }
+
+    if (!token.contains(".")) {
+      throw Exception("The token must be in JWT format");
+    }
+
+    
+    final tokenParts = token.split('.');
+    if (tokenParts.length < 2) {
+      throw Exception("Invalid JWT token format");
+    }
+
+    final payloadBytes = base64Decode(base64.normalize(tokenParts[1]));
+    final payloadJson = jsonDecode(utf8.decode(payloadBytes));
+
+    
+    if (payloadJson['profile_id'] == null && payloadJson['customer_id'] == null) {
+      throw Exception("You can't use admin token with this SDK.");
+    }
+
+    
+    AmanisdkPlatform.instance.startAmaniSDKConfigurable(
+      token,
+      id,
+      birthDate,
+      expireDate,
+      documentNo,
+      geoLocation,
+      lang,
+      email,
+      phone,
+      name,
+    );
+
+    _completer = Completer<SdkResult>();
+    return _completer!.future;
+  }
+    
   Future<SdkResult> startAmaniSDKWithToken({
     required String server,
     required String token,
@@ -64,7 +132,7 @@ class Amanisdk {
     } else if (payloadJson['profile_id'] == null) {
       throw Exception("You can't use admin token with this SDK.");
     }
-
+    
     // Enjoy the ride.  
     AmanisdkPlatform.instance.startAmaniSDKWithToken(
         server,
