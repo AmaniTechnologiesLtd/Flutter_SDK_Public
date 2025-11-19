@@ -45,18 +45,18 @@ class _MyAppState extends State<MyApp> {
 
                 // _amanisdkPlugin.setSSLPinning(filePath);
                 if(Platform.isAndroid) {
-                  await _amanisdkPlugin.configure(
+                  await _amanisdkPlugin.setConfigure(
                   server: "",
                   enabledFeatures: const [
-                    AmaniFeature.idCapture,
-                    AmaniFeature.idHologramDetection,
-                    AmaniFeature.nfcScan,
-                    AmaniFeature.selfieAuto,
-                    AmaniFeature.selfiePoseEstimation,
+                    AmaniAndroidDynamicFeature.idCapture,
+                    AmaniAndroidDynamicFeature.idHologramDetection,
+                    AmaniAndroidDynamicFeature.nfcScan,
+                    AmaniAndroidDynamicFeature.selfieAuto,
+                    AmaniAndroidDynamicFeature.selfiePoseEstimation,
                   ],
                 );
 
-                final result = await _amanisdkPlugin.startAmaniSDKConfigurable(
+                final result = await _amanisdkPlugin.startAmaniSDKWithConfigure(
                   token: "",
                   id: "",
                   

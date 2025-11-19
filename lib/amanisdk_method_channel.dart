@@ -4,19 +4,22 @@ import 'amanisdk_platform_interface.dart';
 class MethodChannelAmanisdk extends AmanisdkPlatform {
 
   @override
-  Future<void> configure({
+  Future<void> setConfigure({
     required String server,
     required List<String> enabledFeatures,
+    String? sharedSecret,
+    String uploadSource = "KYC"
   }) async {
-    await methodChannel.invokeMethod('configure', <String, dynamic>{
+    await methodChannel.invokeMethod('setConfigure', <String, dynamic>{
       'server': server,
       'enabledFeatures': enabledFeatures,
-     
+      'sharedSecret': sharedSecret,
+      'uploadSource': uploadSource,
     });
   }
 
   @override
-  Future<bool?> startAmaniSDKConfigurable(
+  Future<bool?> startAmaniSDKWithConfigure(
     String token,
     String id,
     String? birthDate,
@@ -29,7 +32,7 @@ class MethodChannelAmanisdk extends AmanisdkPlatform {
     String? name,
   ) async {
     final result = await methodChannel.invokeMethod(
-      'startAmaniSDKConfigurable',
+      'startAmaniSDKWithConfigure',
       <String, dynamic>{
         'token': token,
         'id': id,

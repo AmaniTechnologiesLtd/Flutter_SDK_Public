@@ -31,18 +31,32 @@ class Amanisdk {
   /// 
   /// 
   
-  Future<void> configure({
+  // Future<void> setConfigure({
+  //   required String server,
+  //   List<AmaniAndroidDynamicFeature> enabledFeatures = const [],
+  // }) async {
+  //   await AmanisdkPlatform.instance.setConfigure(
+  //     server: server,
+  //     enabledFeatures: enabledFeatures.map((e) => e.name).toList(),
+  //   );
+  //   // _isConfigured = true;
+  // }
+
+  Future<void> setConfigure({
     required String server,
-    List<AmaniFeature> enabledFeatures = const [],
+    List<AmaniAndroidDynamicFeature> enabledFeatures = const [],
+    String? sharedSecret,
+    AmaniUploadSource uploadSource = AmaniUploadSource.kyc,
   }) async {
-    await AmanisdkPlatform.instance.configure(
+    await AmanisdkPlatform.instance.setConfigure(
       server: server,
       enabledFeatures: enabledFeatures.map((e) => e.name).toList(),
+      sharedSecret: sharedSecret,
+      uploadSource: uploadSource.getUploadSourceString,
     );
-    // _isConfigured = true;
   }
 
-    Future<SdkResult> startAmaniSDKConfigurable({
+  Future<SdkResult> startAmaniSDKWithConfigure({
     required String token,
     required String id,
     String? birthDate,
@@ -78,7 +92,7 @@ class Amanisdk {
     }
 
     
-    AmanisdkPlatform.instance.startAmaniSDKConfigurable(
+    AmanisdkPlatform.instance.startAmaniSDKWithConfigure(
       token,
       id,
       birthDate,

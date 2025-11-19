@@ -51,10 +51,10 @@ class AmanisdkPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
         } else if (call.method == "startAmaniSDKWithCredentials") {
 //            startAmaniSDKWithCreds(call, result)
             result.notImplemented()
-        } else if (call.method == "configure") {
-            configure(call, result)
-        } else if (call.method == "startAmaniSDKConfigurable") {
-           startAmaniSDKConfigurable(call, result)
+        } else if (call.method == "setConfigure") {
+            setConfigure(call, result)
+        } else if (call.method == "startAmaniSDKWithConfigure") {
+           startAmaniSDKWithConfigure(call, result)
         } else {
             result.notImplemented()
         }
@@ -124,7 +124,7 @@ class AmanisdkPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
         }
     }
 
-    private fun configure(call: MethodCall, result: MethodChannel.Result) {
+    private fun setConfigure(call: MethodCall, result: MethodChannel.Result) {
     val context = currentContext
     if (context == null) {
         result.error("NO_CONTEXT", "Current context is null. Plugin is not attached to engine.", null)
@@ -185,7 +185,7 @@ class AmanisdkPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
 }
 
 
-private fun startAmaniSDKConfigurable(call: MethodCall, result: MethodChannel.Result) {
+private fun startAmaniSDKWithConfigure(call: MethodCall, result: MethodChannel.Result) {
     if (!isConfigured) {
       
         result.error(
