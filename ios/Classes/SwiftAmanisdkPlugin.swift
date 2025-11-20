@@ -177,8 +177,21 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
   }
   
   private func resultToJson(dictionary: [String: Any]) -> String {
-    let jsonData = try? JSONSerialization.data(withJSONObject: dictionary)
-    return String(data: jsonData!, encoding: .utf8)!
+//    let jsonData = try? JSONSerialization.data(withJSONObject: dictionary)
+//    return String(data: jsonData!, encoding: .utf8)!
+    guard JSONSerialization.isValidJSONObject(dictionary) else {
+//      print("Invalid JSON object: \(dictionary)")
+      return "Invalid JSON object: \(dictionary)"
+    }
+    
+    do {
+      let jsonData = try JSONSerialization.data(withJSONObject: dictionary, options: [])
+      return String(data: jsonData, encoding: .utf8)!
+    } catch {
+  
+      return "JSON encode error: \(error)"
+    }
+    
   }
   
 }
@@ -204,11 +217,20 @@ extension SwiftAmanisdkPlugin: AmaniUIDelegate {
   }
 
   public func onError(type:String,Error:[AmaniError]){
+    
+    let rulesArray: [[String: Any]] = Error.map { err in
+      return [
+        "error_code": err.error_code ?? 0,
+        "error_message": err.error_message ?? ""
+      ]
+    }
+    
     let resultData: [String:Any] = [
       "isVerificationCompleted": false,
       "isTokenExpired": false,
-      "rules": Error as Any
+      "rules": rulesArray
     ]
+    
     channel.invokeMethod("onError",arguments: resultToJson(dictionary:resultData))
   }
 
