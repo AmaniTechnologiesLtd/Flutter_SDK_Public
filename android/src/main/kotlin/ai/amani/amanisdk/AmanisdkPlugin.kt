@@ -184,13 +184,11 @@ class AmanisdkPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
     }
 }
 
-
 private fun startAmaniSDKWithConfigure(call: MethodCall, result: MethodChannel.Result) {
     if (!isConfigured) {
-      
         result.error(
             "NOT_CONFIGURED",
-            "AmaniSDKUI is not configured. Call 'configure' before starting KYC.",
+            "AmaniSDKUI is not configured. Call 'setConfigure' before starting KYC.",
             null
         )
         return
@@ -198,114 +196,76 @@ private fun startAmaniSDKWithConfigure(call: MethodCall, result: MethodChannel.R
 
     val activity = currentActivity
     val launcher = resultLauncher
+
     if (activity == null || launcher == null) {
-        result.error("NO_ACTIVITY", "Current Activity or resultLauncher is null.", null)
+        result.error(
+            "NO_ACTIVITY",
+            "Current Activity or resultLauncher is null.",
+            null
+        )
         return
     }
 
-
-    var birthDate: String? = null
-    var expireDate: String? = null
-    var documentNo: String? = null
-    var geoLocation = false
-    var lang: String? = null
-    var email: String? = null
-    var phone: String? = null
-    var name: String? = null
-
-    if (call.hasArgument("birthDate")) {
-        birthDate = call.argument<String>("birthDate")
-    }
-    if (call.hasArgument("expireDate")) {
-        expireDate = call.argument<String>("expireDate")
-    }
-    if (call.hasArgument("documentNo")) {
-        documentNo = call.argument<String>("documentNo")
-    }
-    geoLocation = if (call.hasArgument("geoLocation")) {
-        call.argument<Boolean>("geoLocation") ?: false
-    } else {
-        false
-    }
-    if (call.hasArgument("lang")) {
-        lang = call.argument<String>("lang")
-    }
-    if (call.hasArgument("email")) {
-        email = call.argument<String>("email")
-    }
-    if (call.hasArgument("phone")) {
-        phone = call.argument<String>("phone")
-    }
-    if (call.hasArgument("name")) {
-        name = call.argument<String>("name")
+    val componentActivity = activity as? ComponentActivity
+    if (componentActivity == null) {
+        result.error(
+            "INVALID_ACTIVITY",
+            "Current Activity must be a ComponentActivity.",
+            null
+        )
+        return
     }
 
     val idNumber = call.argument<String>("id")
     val token = call.argument<String>("token")
 
     if (idNumber.isNullOrBlank() || token.isNullOrBlank()) {
-        result.error("INVALID_ARGUMENT", "Arguments 'id' and 'token' must not be null or empty.", null)
+        result.error(
+            "INVALID_ARGUMENT",
+            "Arguments 'id' and 'token' must not be null or empty.",
+            null
+        )
         return
     }
 
-    result.success(null)
+    val birthDate = call.argument<String>("birthDate")
+    val expireDate = call.argument<String>("expireDate")
+    val documentNo = call.argument<String>("documentNo")
 
-    if (email != null && phone != null && name != null) {
-        if (birthDate != null && expireDate != null && documentNo != null) {
-            AmaniSDKUI.goToKycActivity(
-                activity = activity as ComponentActivity,
-                resultLauncher = launcher,
-                idNumber = idNumber,
-                authToken = token,
-                language = lang ?: "tr",
-                geoLocation = geoLocation,
-                birthDate = birthDate,
-                expireDate = expireDate,
-                documentNumber = documentNo,
-                userEmail = email,
-                userPhoneNumber = phone,
-                userFullName = name
-            )
-        } else {
-            AmaniSDKUI.goToKycActivity(
-                activity = activity as ComponentActivity,
-                resultLauncher = launcher,
-                idNumber = idNumber,
-                authToken = token,
-                language = lang ?: "tr",
-                geoLocation = geoLocation,
-                birthDate = null,
-                expireDate = null,
-                documentNumber = null,
-                userEmail = email,
-                userPhoneNumber = phone,
-                userFullName = name
-            )
-        }
-    } else {
-        if (birthDate != null && expireDate != null && documentNo != null) {
-            AmaniSDKUI.goToKycActivity(
-                activity = activity as ComponentActivity,
-                resultLauncher = launcher,
-                idNumber = idNumber,
-                authToken = token,
-                language = lang ?: "tr",
-                geoLocation = geoLocation,
-                birthDate = birthDate,
-                expireDate = expireDate,
-                documentNumber = documentNo,
-                userEmail = null,
-                userPhoneNumber = null,
-                userFullName = null
-            )
-        } else {
-            AmaniSDKUI.goToKycActivity(
-                activity = activity,
-                resultLauncher = launcher,
-                idNumber = idNumber,
-                authToken = token
-            )
-        }
+    val geoLocation = call.argument<Boolean>("geoLocation") ?: false
+    val lang = call.argument<String>("lang")
+        ?: call.argument<String>("language")
+        ?: "en"
+
+    val email = call.argument<String>("email")
+    val phone = call.argument<String>("phone")
+    val name = call.argument<String>("name")
+
+    try {
+        result.success(null)
+
+        AmaniSDKUI.goToKycActivity(
+            activity = componentActivity,
+            resultLauncher = launcher,
+            idNumber = idNumber,
+            authToken = token,
+            language = lang,
+            geoLocation = geoLocation,
+            birthDate = birthDate,
+            expireDate = expireDate,
+            documentNumber = documentNo,
+            userEmail = email,
+            userPhoneNumber = phone,
+            userFullName = name
+        )
+
+    } catch (e: Exception) {
+        Log.e("AmaniFlutterBridge", "Failed to start KYC activity", e)
+
+        channel?.invokeMethod(
+            "onError",
+            "Failed to start KYC activity: ${e.message}"
+        )
     }
 }
 

@@ -1,81 +1,49 @@
-
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-        maven { url 'https://jitpack.io' }
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:8.6.0'
-    }
+plugins {
+    id "com.android.library"
+    id "org.jetbrains.kotlin.android"
 }
-
-rootProject.allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven { url 'https://www.jitpack.io' }
-        maven {
-            url = "https://jfrog.amani.ai/artifactory/amani-sdk"
-        }
-    }
-}
-
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
 
 android {
     namespace "ai.amani.amanisdk"
     compileSdk 35
+    ndkVersion "27.1.12297006"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+
     java {
         toolchain {
             languageVersion = JavaLanguageVersion.of(17)
         }
     }
-    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-        kotlinOptions {
-            jvmTarget = "17"
-        }
 
+    kotlinOptions {
+        jvmTarget = "17"
     }
 
     defaultConfig {
         minSdkVersion 21
-        ndkVersion = "27.1.12297006"
-        packagingOptions {
-            pickFirst 'lib/x86/libc++_shared.so'
-            pickFirst 'lib/x86_64/libc++_shared.so'
-            pickFirst 'lib/armeabi-v7a/libc++_shared.so'
-            pickFirst 'lib/arm64-v8a/libc++_shared.so'
-        }
-        kotlinOptions {
-            jvmTarget = '17'
-        }
-        dataBinding { enabled true  } 
     }
-    subprojects {
-        afterEvaluate { project ->
-            // check only for "com.android.library" to not modify
-            // your "app" subproject. All plugins will have "com.android.library" plugin, and only your app "com.android.application"
-            // Change your application's namespace in main build.gradle and in main android block.
 
-            if (project.plugins.hasPlugin("com.android.library")) {
-                project.android {
-                    if (namespace == null) {
-                        namespace project.group
-                    }
-                }
-            }
+    buildFeatures {
+        dataBinding true
+        buildConfig true
+    }
+
+    packaging {
+        jniLibs {
+            pickFirsts += [
+                "lib/x86/libc++_shared.so",
+                "lib/x86_64/libc++_shared.so",
+                "lib/armeabi-v7a/libc++_shared.so",
+                "lib/arm64-v8a/libc++_shared.so"
+            ]
         }
     }
 }
 
 dependencies {
-    implementation 'ai.amani:Android.SDK.UI:1.3.0'
+    implementation "ai.amani:Android.SDK.UI:1.4.1"
 }
