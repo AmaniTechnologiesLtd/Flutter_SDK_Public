@@ -271,221 +271,118 @@ private fun startAmaniSDKWithConfigure(call: MethodCall, result: MethodChannel.R
 
 
 
-    private fun startAmaniSDKWithToken(call: MethodCall, result: MethodChannel.Result) {
-        var birthDate: String? = null
-        var expireDate: String? = null
-        var documentNo: String? = null
-        var geoLocation = false
-        var lang: String? = null
-        var email: String? = null
-        var phone: String? = null
-        var name: String? = null
-        var apiVersion: AmaniVersion = AmaniVersion.V2
-        if (call.hasArgument("birthDate")) {
-            birthDate = call.argument<String>("birthDate")
-        }
-        if (call.hasArgument("expireDate")) {
-            expireDate = call.argument<String>("expireDate")
-        }
-        if (call.hasArgument("documentNo")) {
-            documentNo = call.argument<String>("documentNo")
-        }
-        geoLocation = if (call.hasArgument("geoLocation")) {
-            call.argument<Boolean>("geoLocation")!!
-        } else {
-            false
-        }
-        if (call.hasArgument("lang")) {
-            lang = call.argument<String>("lang")
-        }
-        if (call.hasArgument("email")) {
-            email = call.argument<String>("email")
-        }
-        if (call.hasArgument("phone")) {
-            phone = call.argument<String>("phone")
-        }
-        if (call.hasArgument("name")) {
-            name = call.argument<String>("name")
-        }
-        if (call.hasArgument("apiVersion")){
-            var apiVersionString = call.argument<String>("apiVersion")
-            if (apiVersionString == "v1") {
-                apiVersion = AmaniVersion.V1
-            }
-        }
-        AmaniSDKUI.init(
-            applicationContext = currentActivity!!,
-            serverURL = call.argument("server")!!,
-            amaniVersion = apiVersion,
-        )
-        if (email != null && phone != null && name != null) {
-            if (birthDate != null && expireDate != null && documentNo != null) {
-                AmaniSDKUI.goToKycActivity(
-                    activity = currentActivity as ComponentActivity, //Activity pointer
-                    resultLauncher = resultLauncher!!, //Requires for listening the activity result, sample resultLauncher is below
-                    idNumber = call.argument<String>("id")!!,
-                    authToken = call.argument("token")!!,
-                    language = lang!!,
-                    geoLocation = true, //Giving permission to access SDK user's location data to process that data
-                    birthDate = birthDate, //YYMMDD format. (For Example: 20 May 1990 is 900520). If NFC not used not mandatory
-                    expireDate = expireDate, //YYMMDD format. Expire date of SDK user's ID Card, If NFC not used not mandatory
-                    documentNumber = documentNo, // Document number of SDK user's ID Card, If NFC not used not mandatory
-                    userEmail = email, // Email of the SDK user, non mandatory field
-                    userPhoneNumber = phone, //Phone number of the SDK user, non mandatory field,
-                    userFullName = name //Full name of the SDK user, non mandatory field
-                )
-            } else {
-                AmaniSDKUI.goToKycActivity(
-                    activity = currentActivity as ComponentActivity,
-                    resultLauncher = resultLauncher!!,
-                    idNumber =  call.argument("id")!!,
-                    authToken = call.argument("token")!!,
-                    language = lang!!,
-                    birthDate = null,
-                    expireDate = null,
-                    documentNumber = null,
-                    userEmail = email,
-                    userPhoneNumber = phone,
-                    userFullName = name
-                )
+   private fun startAmaniSDKWithToken(call: MethodCall, result: MethodChannel.Result) {
+    val activity = currentActivity
+    val launcher = resultLauncher
 
-            }
-        } else {
-            if (birthDate != null && expireDate != null && documentNo != null) {
-                AmaniSDKUI.goToKycActivity(
-                    activity = currentActivity as ComponentActivity,
-                    resultLauncher = resultLauncher!!,
-                    idNumber = call.argument("id")!!,
-                    authToken = call.argument("token")!!,
-                    language = lang!!,
-                    birthDate = birthDate,
-                    expireDate = expireDate,
-                    documentNumber = documentNo,
-                    geoLocation = geoLocation,
-                    userEmail = null,
-                    userPhoneNumber = null,
-                    userFullName = null,
-                )
-            } else {
-                AmaniSDKUI.goToKycActivity(
-                    activity = currentActivity!!,
-                    resultLauncher = resultLauncher!!,
-                    idNumber = call.argument("id")!!,
-                    authToken = call.argument("token")!!
-                )
-            }
-        }
+    if (activity == null || launcher == null) {
+        result.error(
+            "NO_ACTIVITY",
+            "Current Activity or resultLauncher is null.",
+            null
+        )
+        return
     }
 
-//    private fun startAmaniSDKWithCreds(call: MethodCall, result: MethodChannel.Result) {
-//        var birthDate: String? = null
-//        var expireDate: String? = null
-//        var documentNo: String? = null
-//        var geoLocation = false
-//        var lang: String? = null
-//        var email: String? = null
-//        var phone: String? = null
-//        var name: String? = null
-//        if (call.hasArgument("birthDate")) {
-//            birthDate = call.argument<String>("birthDate")
-//        }
-//        if (call.hasArgument("expireDate")) {
-//            expireDate = call.argument<String>("expireDate")
-//        }
-//        if (call.hasArgument("documentNo")) {
-//            documentNo = call.argument<String>("documentNo")
-//        }
-//        geoLocation = if (call.hasArgument("geoLocation")) {
-//            call.argument<Boolean>("geoLocation")!!
-//        } else {
-//            false
-//        }
-//        if (call.hasArgument("lang")) {
-//            lang = call.argument<String>("lang")
-//        }
-//        if (call.hasArgument("email")) {
-//            email = call.argument<String>("email")
-//        }
-//        if (call.hasArgument("phone")) {
-//            phone = call.argument<String>("phone")
-//        }
-//        if (call.hasArgument("name")) {
-//            name = call.argument<String>("name")
-//        }
-//        Amani.init(currentContext, call.argument("server"))
-//        if (email != null && phone != null && name != null) {
-//            if (birthDate != null && expireDate != null && documentNo != null) {
-////                Amani.goToKycActivity(
-////                    currentActivity,
-////                    call.argument("id"),
-////                    call.argument("loginEmail"),
-////                    call.argument("loginPassword"),
-////                    birthDate,
-////                    expireDate,
-////                    documentNo,
-////                    geoLocation,
-////                    lang,
-////                    email,
-////                    phone,
-////                    name
-////                )
-//                AmaniSDKUI.goToKycActivity(
-//                    activity = currentActivity as ComponentActivity, //Activity pointer
-//                    resultLauncher = resultLauncher!!, //Requires for listening the activity result, sample resultLauncher is below
-//                    idNumber = call.argument<String>("id")!!,
-//                    authToken = call.argument("token")!!,
-//                    language = lang!!,
-//                    geoLocation = true, //Giving permission to access SDK user's location data to process that data
-//                    birthDate = birthDate, //YYMMDD format. (For Example: 20 May 1990 is 900520). If NFC not used not mandatory
-//                    expireDate = expireDate, //YYMMDD format. Expire date of SDK user's ID Card, If NFC not used not mandatory
-//                    documentNumber = documentNo, // Document number of SDK user's ID Card, If NFC not used not mandatory
-//                    userEmail = email, // Email of the SDK user, non mandatory field
-//                    userPhoneNumber = phone, //Phone number of the SDK user, non mandatory field,
-//                    userFullName = name //Full name of the SDK user, non mandatory field
-//                )
-//            } else {
-//                Amani.goToKycActivity(
-//                    currentActivity,
-//                    call.argument("id"), call.argument("loginEmail"),
-//                    call.argument("loginPassword"),
-//                    "",
-//                    "",
-//                    "",
-//                    geoLocation,
-//                    lang,
-//                    email,
-//                    phone,
-//                    name
-//                )
-//            }
-//        } else {
-//            if (birthDate != null && expireDate != null && documentNo != null) {
-//                Amani.goToKycActivity(
-//                    currentActivity,
-//                    call.argument("id"),
-//                    call.argument("loginEmail"),
-//                    call.argument("loginPassword"),
-//                    birthDate,
-//                    expireDate,
-//                    documentNo,
-//                    geoLocation,
-//                    lang,
-//                    null,
-//                    null,
-//                    null
-//                )
-//            } else {
-//                Amani.goToKycActivity(
-//                    currentActivity,
-//                    call.argument("id"),
-//                    call.argument("loginEmail"),
-//                    call.argument("loginPassword"),
-//                    geoLocation,
-//                    lang
-//                )
-//            }
-//        }
-//    }
+    val componentActivity = activity as? ComponentActivity
+    if (componentActivity == null) {
+        result.error(
+            "INVALID_ACTIVITY",
+            "Current Activity must be a ComponentActivity.",
+            null
+        )
+        return
+    }
+
+    val context = currentContext ?: activity.applicationContext
+
+    val server = call.argument<String>("server")
+    val token = call.argument<String>("token")
+    val idNumber = call.argument<String>("id")
+
+    if (server.isNullOrBlank()) {
+        result.error(
+            "INVALID_ARGUMENT",
+            "Argument 'server' must not be null or empty.",
+            null
+        )
+        return
+    }
+
+    if (token.isNullOrBlank()) {
+        result.error(
+            "INVALID_ARGUMENT",
+            "Argument 'token' must not be null or empty.",
+            null
+        )
+        return
+    }
+
+    if (idNumber.isNullOrBlank()) {
+        result.error(
+            "INVALID_ARGUMENT",
+            "Argument 'id' must not be null or empty.",
+            null
+        )
+        return
+    }
+
+    val birthDate = call.argument<String>("birthDate")
+    val expireDate = call.argument<String>("expireDate")
+    val documentNo = call.argument<String>("documentNo")
+
+    val geoLocation = call.argument<Boolean>("geoLocation") ?: false
+
+    // Hem mevcut "lang" key'ini hem de eski/alternatif "language" key'ini destekle.
+    val lang = call.argument<String>("lang")
+        ?: call.argument<String>("language")
+        ?: "tr"
+
+    val email = call.argument<String>("email")
+    val phone = call.argument<String>("phone")
+    val name = call.argument<String>("name")
+
+    val apiVersionString = call.argument<String>("apiVersion")
+    val apiVersion = when (apiVersionString) {
+        "v1" -> AmaniVersion.V1
+        "v2", null -> AmaniVersion.V2
+        else -> AmaniVersion.V2
+    }
+
+    try {
+        AmaniSDKUI.init(
+            applicationContext = context,
+            serverURL = server,
+            amaniVersion = apiVersion
+        )
+
+        result.success(null)
+
+        AmaniSDKUI.goToKycActivity(
+            activity = componentActivity,
+            resultLauncher = launcher,
+            idNumber = idNumber,
+            authToken = token,
+            language = lang,
+            geoLocation = geoLocation,
+            birthDate = birthDate,
+            expireDate = expireDate,
+            documentNumber = documentNo,
+            userEmail = email,
+            userPhoneNumber = phone,
+            userFullName = name
+        )
+
+    } catch (e: Exception) {
+        Log.e("AmaniFlutterBridge", "Failed to start KYC activity with token", e)
+
+        result.error(
+            "START_KYC_FAILED",
+            "Failed to start KYC activity: ${e.message}",
+            null
+        )
+    }
+}
 
     // Keep for ActivityAware implementation
     override fun onDetachedFromActivityForConfigChanges() {}
