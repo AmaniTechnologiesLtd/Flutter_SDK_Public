@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:flutter/services.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
@@ -28,6 +26,32 @@ abstract class AmanisdkPlatform extends PlatformInterface {
 
   final methodChannel = const MethodChannel('amanisdk');
 
+   Future<void> setConfigure({
+    required String server,
+    required List<String> enabledFeatures,
+    String? sharedSecret,
+    String uploadSource = "KYC"
+  }) {
+    throw UnimplementedError('configure() has not been implemented.');
+  }
+
+  Future<bool?> startAmaniSDKWithConfigure(
+    String token,
+    String id,
+    String? birthDate,
+    String? expireDate,
+    String? documentNo,
+    bool geoLocation,
+    String? language,
+    String? email,
+    String? phone,
+    String? name,
+  ) {
+    throw UnimplementedError(
+      'startAmaniSDKConfigurable() has not been implemented.',
+    );
+  }
+
   Future<void> startAmaniSDKWithToken(
     String server,
     String token,
@@ -36,10 +60,11 @@ abstract class AmanisdkPlatform extends PlatformInterface {
     String? expireDate,
     String? documentNo,
     bool? geoLocation,
-    String? lang,
+    String? language,
     String? email,
     String? phone,
     String? name,
+    String apiVersion,
   ) {
     throw UnimplementedError(
         'startAmaniSDKWithToken() has not been implemented.');
@@ -54,12 +79,20 @@ abstract class AmanisdkPlatform extends PlatformInterface {
     String? expireDate,
     String? documentNo,
     bool? geoLocation,
-    String? lang,
+    String? language,
     String? email,
     String? phone,
     String? name,
   ) {
     throw UnimplementedError(
         'startAmaniSDKWithCredentials() has not been implemented.');
+  }
+
+  Future<void> setSSLPinning(
+    String? certificate,
+  ) async {
+    throw UnimplementedError(
+      "SSL certificate can't get path url."
+    );
   }
 }

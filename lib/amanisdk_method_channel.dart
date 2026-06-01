@@ -1,9 +1,55 @@
-import 'package:flutter/services.dart';
-
 import 'amanisdk_platform_interface.dart';
 
 /// An implementation of [AmanisdkPlatform] that uses method channels.
 class MethodChannelAmanisdk extends AmanisdkPlatform {
+
+  @override
+  Future<void> setConfigure({
+    required String server,
+    required List<String> enabledFeatures,
+    String? sharedSecret,
+    String uploadSource = "KYC"
+  }) async {
+    await methodChannel.invokeMethod('setConfigure', <String, dynamic>{
+      'server': server,
+      'enabledFeatures': enabledFeatures,
+      'sharedSecret': sharedSecret,
+      'uploadSource': uploadSource,
+    });
+  }
+
+  @override
+  Future<bool?> startAmaniSDKWithConfigure(
+    String token,
+    String id,
+    String? birthDate,
+    String? expireDate,
+    String? documentNo,
+    bool geoLocation,
+    String? language,
+    String? email,
+    String? phone,
+    String? name,
+  ) async {
+    final result = await methodChannel.invokeMethod(
+      'startAmaniSDKWithConfigure',
+      <String, dynamic>{
+        'token': token,
+        'id': id,
+        'birthDate': birthDate,
+        'expireDate': expireDate,
+        'documentNo': documentNo,
+        'geoLocation': geoLocation,
+        'lang': language,
+        'email': email,
+        'phone': phone,
+        'name': name,
+      },
+    );
+    return result;
+  }
+
+
   @override
   Future<bool?> startAmaniSDKWithToken(
     String server,
@@ -13,10 +59,11 @@ class MethodChannelAmanisdk extends AmanisdkPlatform {
     String? expireDate,
     String? documentNo,
     bool? geoLocation,
-    String? lang,
+    String? language,
     String? email,
     String? phone,
     String? name,
+    String apiVersion,
   ) async {
     final result = await methodChannel
         .invokeMethod('startAmaniSDKWithToken', <String, dynamic>{
@@ -27,10 +74,11 @@ class MethodChannelAmanisdk extends AmanisdkPlatform {
       'expireDate': expireDate,
       'documentNo': documentNo,
       'geoLocation': geoLocation,
-      'lang': lang,
+      'lang': language,
       'email': email,
       'phone': phone,
       'name': name,
+      'apiVersion': apiVersion,
     });
     return result;
   }
@@ -66,5 +114,16 @@ class MethodChannelAmanisdk extends AmanisdkPlatform {
       'name': name,
     });
     return result;
+  }
+
+  Future<void> setSSLPinning(
+    String? certificate
+  ) async {
+     final result = await methodChannel
+        .invokeMethod('SSLcertificate', <String, dynamic>{
+          'certificate': certificate
+        });
+
+      return result;
   }
 }

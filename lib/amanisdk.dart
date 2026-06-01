@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io' show Platform;
 
-import 'package:amanisdk/sdkresult.dart';
+import 'package:amani_flutter_sdk/sdkresult.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'amaniAndroidConfigure.dart';
 import 'amanisdk_platform_interface.dart';
 
 class Amanisdk {
@@ -25,6 +28,87 @@ class Amanisdk {
   /// [email], [phone], [name] fields are related to customer profile.
   ///
   ///
+  /// 
+  /// 
+  
+  // Future<void> setConfigure({
+  //   required String server,
+  //   List<AmaniAndroidDynamicFeature> enabledFeatures = const [],
+  // }) async {
+  //   await AmanisdkPlatform.instance.setConfigure(
+  //     server: server,
+  //     enabledFeatures: enabledFeatures.map((e) => e.name).toList(),
+  //   );
+  //   // _isConfigured = true;
+  // }
+
+  Future<void> setConfigure({
+    required String server,
+    List<AmaniAndroidDynamicFeature> enabledFeatures = const [],
+    String? sharedSecret,
+    AmaniUploadSource uploadSource = AmaniUploadSource.kyc,
+  }) async {
+    await AmanisdkPlatform.instance.setConfigure(
+      server: server,
+      enabledFeatures: enabledFeatures.map((e) => e.name).toList(),
+      sharedSecret: sharedSecret,
+      uploadSource: uploadSource.getUploadSourceString,
+    );
+  }
+
+  Future<SdkResult> startAmaniSDKWithConfigure({
+    required String token,
+    required String id,
+    String? birthDate,
+    String? expireDate,
+    String? documentNo,
+    bool geoLocation = false,
+    String? lang,
+    String? email,
+    String? phone,
+    String? name,
+  }) async {
+    
+    if (token.isEmpty) {
+      throw Exception("You can't use an empty string as token");
+    }
+
+    if (!token.contains(".")) {
+      throw Exception("The token must be in JWT format");
+    }
+
+    
+    final tokenParts = token.split('.');
+    if (tokenParts.length < 2) {
+      throw Exception("Invalid JWT token format");
+    }
+
+    final payloadBytes = base64Decode(base64.normalize(tokenParts[1]));
+    final payloadJson = jsonDecode(utf8.decode(payloadBytes));
+
+    
+    if (payloadJson['profile_id'] == null && payloadJson['customer_id'] == null) {
+      throw Exception("You can't use admin token with this SDK.");
+    }
+
+    
+    AmanisdkPlatform.instance.startAmaniSDKWithConfigure(
+      token,
+      id,
+      birthDate,
+      expireDate,
+      documentNo,
+      geoLocation,
+      lang,
+      email,
+      phone,
+      name,
+    );
+
+    _completer = Completer<SdkResult>();
+    return _completer!.future;
+  }
+    
   Future<SdkResult> startAmaniSDKWithToken({
     required String server,
     required String token,
@@ -39,7 +123,10 @@ class Amanisdk {
     String? name,
   }) async {
     // Adds the suffix for api endpoints.
-    String serverURL = Platform.isAndroid ? '$server/api/v1/' : server;
+    // String serverURL = Platform.isAndroid ? '$server/api/v2/' : server;
+    String language = lang ?? 'tr';
+    bool location = geoLocation ?? false;
+    String apiVersion = 'v2';
 
     if (token == "") {
       throw Exception("You can't use an empty string as token");
@@ -53,24 +140,28 @@ class Amanisdk {
     List<String> tokenParts = token.split('.');
     final payloadBytes = base64Decode(base64.normalize(tokenParts[1]));
     final payloadJson = jsonDecode(utf8.decode(payloadBytes));
-
-    if (payloadJson['customer_id'] == null) {
+   
+    if (payloadJson['customer_id'] != null) {
+      apiVersion = 'v1';
+    } else if (payloadJson['profile_id'] == null) {
       throw Exception("You can't use admin token with this SDK.");
     }
-
-    // Enjoy the ride.
+    
+    // Enjoy the ride.  
     AmanisdkPlatform.instance.startAmaniSDKWithToken(
-        serverURL,
+        server,
         token,
         id,
         birthDate,
         expireDate,
         documentNo,
-        geoLocation,
-        lang,
+        location,
+        language,
         email,
         phone,
-        name);
+        name,
+        apiVersion,
+        );
 
     _completer = Completer<SdkResult>();
     return _completer!.future;
@@ -102,7 +193,9 @@ class Amanisdk {
     String? name,
   }) async {
     // Adds the suffix for api endpoints.
-    String serverURL = Platform.isAndroid ? '$server/api/v1/' : server;
+    String serverURL = Platform.isAndroid ? '$server/api/v2/' : server;
+    String language = lang ?? 'tr';
+    bool location = geoLocation ?? false;
 
     AmanisdkPlatform.instance.startAmaniSDKWithCredentials(
         serverURL,
@@ -112,13 +205,19 @@ class Amanisdk {
         birthDate,
         expireDate,
         documentNo,
-        geoLocation,
-        lang,
+        location,
+        language,
         email,
         phone,
         name);
 
     _completer = Completer<SdkResult>();
     return _completer!.future;
+  }
+
+  Future<void> setSSLPinning(
+    String? certificate,
+  ) async {
+   AmanisdkPlatform.instance.setSSLPinning(certificate);
   }
 }

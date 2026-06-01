@@ -1,52 +1,49 @@
-group 'ai.amani.amanisdk'
-version '1.0'
-
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-        maven { url "https://jfrog.amani.ai/artifactory/amani-sdk"}
-        jcenter()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.2'
-    }
+plugins {
+    id "com.android.library"
+    id "org.jetbrains.kotlin.android"
 }
-
-rootProject.allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven { url "https://jfrog.amani.ai/artifactory/amani-sdk"}
-        jcenter()
-    }
-}
-
-apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 34
+    namespace "ai.amani.amanisdk"
+    compileSdk 35
+    ndkVersion "27.1.12297006"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
 
-    defaultConfig {
-        minSdkVersion 21 
-        
-        packagingOptions {
-            pickFirst 'lib/x86/libc++_shared.so'
-            pickFirst 'lib/x86_64/libc++_shared.so'
-            pickFirst 'lib/armeabi-v7a/libc++_shared.so'
-            pickFirst 'lib/arm64-v8a/libc++_shared.so'
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
         }
-
-        dataBinding { enabled true  } 
     }
 
-    dependencies {
-        implementation 'ai.amani.android:AmaniAi:1.3.5'
+    kotlinOptions {
+        jvmTarget = "17"
     }
+
+    defaultConfig {
+        minSdkVersion 21
+    }
+
+    buildFeatures {
+        dataBinding true
+        buildConfig true
+    }
+
+    packaging {
+        jniLibs {
+            pickFirsts += [
+                "lib/x86/libc++_shared.so",
+                "lib/x86_64/libc++_shared.so",
+                "lib/armeabi-v7a/libc++_shared.so",
+                "lib/arm64-v8a/libc++_shared.so"
+            ]
+        }
+    }
+}
+
+dependencies {
+    implementation "ai.amani:Android.SDK.UI:1.4.1"
 }

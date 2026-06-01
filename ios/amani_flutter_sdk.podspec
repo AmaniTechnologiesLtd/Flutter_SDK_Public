@@ -3,20 +3,21 @@
 # Run `pod lib lint amanisdk.podspec` to validate before publishing.
 #
 Pod::Spec.new do |s|
-  s.name             = 'amanisdk'
-  s.version          = '0.0.13'
+  s.name             = 'amani_flutter_sdk'
+  s.version          = '0.0.15'
   s.summary          = 'Flutter bindings for our native sdks'
   s.description      = <<-DESC
   Amani Ai SDK Flutter bindings.
                        DESC
   s.homepage         = 'https://amani.ai'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Your Company' => 'hi@amani.ai' }
+  s.author           = { 'Amani' => 'hi@amani.ai' }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.dependency 'Amani', '1.2.46'
-  s.platform = :ios, '11.0'
+  s.dependency 'AmaniSDK', '~>3.4.7'
+  s.dependency 'AmaniUI', '~>1.2.4'
+  s.platform = :ios, '13.0'
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }

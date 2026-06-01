@@ -3,10 +3,12 @@
 This document helps you how to integrate our SDK into your Flutter project.
 
 ## Installation
-Before using our sdk you must complete the changes below. Otherwise you might encounter build issues.
+
+Before using our sdk you must complete the changes below. Otherwise you might encounter build issues or crashes.
 
 ## Requirements
-- iOS 11 or later
+
+- iOS 13 or later
 - Android minSDK 21 or later
 - Android compileSDKVersion 34
 - Flutter 3.0 or later
@@ -23,6 +25,10 @@ packagingOptions {
   pickFirst 'lib/arm64-v8a/libc++_shared.so'
 }
 dataBinding { enabled true }
+
+aaptOptions {
+  noCompress "tflite"
+}
 ```
 
 ## Android Compile Options
@@ -58,6 +64,15 @@ defaultConfig {
     }
 ```
 
+Also if you hadn't already, add jitpack and our jfrog under the repositories section. 
+
+```gradle
+maven { url 'https://www.jitpack.io' }
+maven {
+  url = "https://jfrog.amani.ai/artifactory/amani-sdk"
+}
+```
+
 ## Update your AndroidManifest.xml
 
 You must add `tools:replace="android:label"` on your main android manifest file.
@@ -66,10 +81,10 @@ You must add `tools:replace="android:label"` on your main android manifest file.
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" # this line must be added
     package="ai.amani.amanisdk_example">
-	<application
+	    <application
         android:label="amanisdk_example"
         android:name="${applicationName}"
-        tools:replace="android:label" #this line must be added
+        tools:replace="android:label android:name" #this line must be added
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
@@ -110,15 +125,15 @@ You must add the rules below to proguard file
 -keep class ai.amani.amanisdk.AmanisdkPlugin {*;}
 -dontwarn ai.amani.amanisdk.AmanisdkPlugin
 
--keep class com.amani_ml** {*;}
--dontwarn com.amani.ml**
+-keep class ai.** {*;}
+-dontwarn ai.**
 -keep class datamanager.** {*;}
 -dontwarn datamanager.**
 -keep class networkmanager.** {*;}
 -dontwarn networkmanager.**
--keep class com.amani_ai.jniLibrary.CroppedResult { *; }
+-keep class ai.amani.jniLibrary.CroppedResult.**{*;}
 
--keep class org.jmrtd.** { *; }
+-keep class org.jmrtd.** {*;}
 -keep class net.sf.scuba.** {*;}
 -keep class org.bouncycastle.** {*;}
 -keep class org.spongycastle.** {*;}
@@ -143,12 +158,23 @@ You must add the rules below to proguard file
 -dontwarn org.openjsse.net.ssl.OpenJSSE
 ```
 
+## Change MainActivity to extend FlutterFragmentActivity
+
+Some features of this SDK uses methods from `FlutterFragmentActivity`. To use this SDK you must extend your main activity with `FlutterFragmentActivity` insead of `FlutterActivity`
+
+```kotlin
+import io.flutter.embedding.android.FlutterFragmentActivity;
+public class MainActivity extends FlutterFragmentActivity  {
+    
+}
+```
+
 ## iOS Podfile changes
 
-Set the global platform of your project to iOS 11.0
+Set the global platform of your project to iOS 13.0
 
 ```ruby
-platform :ios, '11.0'
+platform :ios, '13.0'
 ```
 
 Add the SDK’s source to your podfile.
@@ -236,8 +262,9 @@ CryptoTokenKit.framework
 Add our SDK to your project’s `pubspec.yaml` file.
 
 ```yaml
-amanisdk:
+amani_flutter_sdk:
     git: https://github.com/AmaniTechnologiesLtd/Flutter_SDK_Public
+    ref: feat/v3-ui
 ```
 
 After adding our SDK to your project don't forget to run the command below to install our SDK.

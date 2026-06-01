@@ -1,38 +1,49 @@
 PODS:
-  - Amani (1.2.46):
-    - AmaniOpenSSL (~> 1.1.1100)
-    - lottie-ios (~> 3.5.0)
-  - AmaniOpenSSL (1.1.2000)
-  - amanisdk (0.0.13):
-    - Amani (= 1.2.46)
+  - amani_flutter_sdk (0.0.15):
+    - AmaniSDK (~> 3.4.7)
+    - AmaniUI (~> 1.2.4)
     - Flutter
+  - AmaniSDK (3.4.21):
+    - OpenSSL-Universal (= 1.1.2301)
+  - AmaniUI (1.2.9):
+    - AmaniSDK (~> 3.4)
+    - lottie-ios (~> 4.5)
   - Flutter (1.0.0)
-  - lottie-ios (3.5.0)
+  - lottie-ios (4.5.2)
+  - OpenSSL-Universal (1.1.2301)
+  - path_provider_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
 
 DEPENDENCIES:
-  - amanisdk (from `.symlinks/plugins/amanisdk/ios`)
+  - amani_flutter_sdk (from `.symlinks/plugins/amani_flutter_sdk/ios`)
   - Flutter (from `Flutter`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
 
 SPEC REPOS:
   https://github.com/AmaniTechnologiesLtd/Mobile_SDK_Repo:
-    - Amani
-    - AmaniOpenSSL
-  https://github.com/CocoaPods/Specs:
+    - AmaniSDK
+    - AmaniUI
+  trunk:
     - lottie-ios
 
 EXTERNAL SOURCES:
-  amanisdk:
-    :path: ".symlinks/plugins/amanisdk/ios"
+  amani_flutter_sdk:
+    :path: ".symlinks/plugins/amani_flutter_sdk/ios"
   Flutter:
     :path: Flutter
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
 
 SPEC CHECKSUMS:
-  Amani: 3f89c980497d3325ee8a3f0466f245e0b7d0553f
-  AmaniOpenSSL: 7a1714c32d10145b6a54ec63a713cf5b71af0159
-  amanisdk: 34f85d16c5894c67f9a9ef982a63468e98c8bc07
+  amani_flutter_sdk: a5cab92966049423cfbce2a6ef12f3a7af029ff7
+  AmaniSDK: 5ba8bde5843c160c893a849afc1ee0193d17ae86
+  AmaniUI: 1ac3c3e0d26773c26bdc59ba41db171328411dce
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  lottie-ios: c55158d67d0629a260625cc2ded2052b829e3c3e
+  lottie-ios: 96784afc26ea031d3e2b6cae342a4b8915072489
+  OpenSSL-Universal: ca89c20240633a77c776082ba76b7d90f992bf77
+  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
 
-PODFILE CHECKSUM: 22ab60dbf58e727104c0ac405f01eaba6f84f14b
+PODFILE CHECKSUM: d818b241896e6892f7c4bed9359f1463b8885d1d
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2

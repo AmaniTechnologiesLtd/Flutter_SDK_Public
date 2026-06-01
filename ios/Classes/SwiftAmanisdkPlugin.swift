@@ -1,9 +1,11 @@
 import Flutter
 import UIKit
-import Amani
+import AmaniUI
+import AmaniSDK
 
+@objc
 public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
-  let nativeSDK = AmaniSDK.sharedInstance
+  let nativeSDK = AmaniUI.sharedInstance
   var channel: FlutterMethodChannel!
   
   public static func register(with registrar: FlutterPluginRegistrar) {
@@ -12,8 +14,9 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
     registrar.addMethodCallDelegate(instance, channel: methodChannel)
     instance.channel = methodChannel
   }
-
+  
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+    debugPrint("handle fonksiyonuna geldi ve \(call.method)")
     if(call.method == "startAmaniSDKWithToken") {
       startAmaniSDKWithToken(call: call)
     }
@@ -21,20 +24,72 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
     if (call.method == "startAmaniSDKWithCredentials") {
       startAmaniSDKWithCredentials(call: call)
     }
-  }
+    if (call.method == "SSLcertificate") {
+      DispatchQueue.global(qos: .userInitiated).async {
+        Task {
+            await self.setSSLPinning(call: call)
+        }
+      }
+    }
+    
+    } 
+  
+
+  // func setSSLPinning(call: FlutterMethodCall) async {
+  //   let params = call.arguments as! [String:Any]
+  //   let certificateURL: URL
+
+  //  if let cerPathURL = params["certificate"] as? String {
+  //   certificateURL = URL(string: cerPathURL)
+  //    do {
+  //     try? await nativeSDK.setSSLPinning(certificate: certificateURL)
+  //    }catch(let error) {
+  //     debugPrint(error)
+  //     }
+
+  //  } 
+  // }
+
+ func setSSLPinning(call: FlutterMethodCall) async {
+    let params = call.arguments as! [String: Any]
+    do {
+        if let certificate = params["certificate"] as? String {
+          debugPrint("parametre olarak gönderdiğim değer \(certificate)")
+            guard let cerUrl = URL(string: certificate) else {
+                debugPrint("can't convert to URL")
+                return
+            }
+            debugPrint(cerUrl)
+            try? await nativeSDK.setSSLPinning(certificate: cerUrl) // Burada direkt cerUrl kullanılıyor
+        } else {
+            debugPrint("can't find certificate")
+        }
+    } catch {
+        debugPrint("ssl pinning setlenemedi. \(error)")
+    }
+}
   
   func startAmaniSDKWithToken(call: FlutterMethodCall) {
-    let useGeoLocation = (call.arguments as! [String:Any])["geoLocation"] as? Bool
-    let params = call.arguments as! [String:Any]
+       var apiVersion: ApiVersions = .v2
+      let params = call.arguments as! [String:Any]
+      //todo: location eklenecek cllocation dan.
+      //let test:CLLocation = CLLocation(coordinate: CLLocationCoordinate2D(latitude: .pi, longitude: .pi), altitude: 0, horizontalAccuracy: 0, verticalAccuracy: 0, course: 0, speed: 0, timestamp: Date(timeIntervalSinceNow: 1))
+    
+    
+   
     var customer: CustomerRequestModel?
     let name = params["name"] as? String
     let email = params["email"] as? String
     let phone = params["phone"] as? String
-      
+
+    if let apiVers = params["apiVersion"] as? String, apiVers == "v1" {
+      apiVersion = .v1
+    } 
+    
     if (name == nil && email == nil && phone == nil) {
-        customer = CustomerRequestModel(idCardNumber: params["id"] as! String)
+      customer = CustomerRequestModel(idCardNumber: params["id"] as! String)
     } else {
-        customer = CustomerRequestModel(name: params["name"] as? String, email: params["email"] as? String, phone: params["phone"] as? String, idCardNumber: params["id"] as! String)
+      customer = CustomerRequestModel(name: params["name"] as? String, email: params["email"] as? String, phone: params["phone"] as? String, idCardNumber: params["id"] as! String)
     }
     var nvi: NviModel? = nil
     
@@ -43,23 +98,24 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
     }
     
     nativeSDK.setDelegate(delegate: self)
+    // TODO: Make v2 back end usable
     nativeSDK.set(
-        server: params["server"] as! String,
-        token: params["token"] as! String,
-        customer: customer!,
-        nvi: nvi,
-        sharedSecret: params["sharedSecret"] as? String ?? nil,
-        useGeoLocation: useGeoLocation ?? false,
-        language: params["lang"] as? String ?? "tr")
-    
+      server: params["server"] as! String,
+      token: params["token"] as! String,
+      customer: customer!,
+      language: params["lang"] as? String ?? "tr",
+      nviModel: nvi,
+      apiVersion: apiVersion
+    )
     let vc = UIApplication.shared.windows.last?.rootViewController
     DispatchQueue.main.async {
-      self.nativeSDK.showSDK(overParent: vc!)
+      self.nativeSDK.showSDK(on: vc!) { (customerModel, error) in
+        // no-op
+      }
     }
   }
   
   func startAmaniSDKWithCredentials(call: FlutterMethodCall) {
-    let useGeoLocation = (call.arguments as! [String:Any])["geoLocation"] as? Bool
     let params = call.arguments as! [String:Any]
     var customer: CustomerRequestModel?
     let name = params["name"] as? String
@@ -68,11 +124,11 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
     let loginEmail = params["loginEmail"] as? String
     let loginPassword = params["loginPassword"] as? String
     
-      
+    
     if (name == nil && email == nil && phone == nil) {
-        customer = CustomerRequestModel(idCardNumber: params["id"] as! String)
+      customer = CustomerRequestModel(idCardNumber: params["id"] as! String)
     } else {
-        customer = CustomerRequestModel(name: params["name"] as? String, email: params["email"] as? String, phone: params["phone"] as? String, idCardNumber: params["id"] as! String)
+      customer = CustomerRequestModel(name: params["name"] as? String, email: params["email"] as? String, phone: params["phone"] as? String, idCardNumber: params["id"] as! String)
     }
     var nvi: NviModel? = nil
     
@@ -80,23 +136,31 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
       nvi = NviModel(documentNo: documentNo , dateOfBirth: birthDate, dateOfExpire: expireDate)
     }
     
+    //    nativeSDK.setDelegate(delegate: self)
+    //    nativeSDK.set(
+    //        server: params["server"] as! String,
+    //        customer: customer!,
+    //        nvi: nvi,
+    //        sharedSecret: params["sharedSecret"] as? String ?? nil,
+    //        language: params["lang"] as? String ?? "tr")
+    
     nativeSDK.setDelegate(delegate: self)
-//    nativeSDK.set(
-//        server: params["server"] as! String,
-//        customer: customer!,
-//        nvi: nvi,
-//        sharedSecret: params["sharedSecret"] as? String ?? nil,
-//        useGeoLocation: useGeoLocation ?? false,
-//        language: params["lang"] as? String ?? "tr")
-   
-    nativeSDK.set(server: params["server"] as! String,
-                  userName: loginEmail!,
-                  password: loginPassword!,
-                  customer: customer!)
+    nativeSDK.set(
+      server: params["server"] as! String,
+      userName: loginEmail!,
+      password: loginPassword!,
+      customer: customer!,
+      language: params["lang"] as? String ?? "tr",
+      nviModel: nvi,
+      apiVersion: .v2
+    )
     
     let vc = UIApplication.shared.windows.last?.rootViewController
     DispatchQueue.main.async {
-      self.nativeSDK.showSDK(overParent: vc!)
+      // Fire up!
+      self.nativeSDK.showSDK(on: vc!) {(customerRes, error) in
+        // no-op
+      }
     }
   }
   
@@ -113,23 +177,37 @@ public class SwiftAmanisdkPlugin: NSObject, FlutterPlugin {
   }
   
   private func resultToJson(dictionary: [String: Any]) -> String {
-    let jsonData = try? JSONSerialization.data(withJSONObject: dictionary)
-    return String(data: jsonData!, encoding: .utf8)!
+//    let jsonData = try? JSONSerialization.data(withJSONObject: dictionary)
+//    return String(data: jsonData!, encoding: .utf8)!
+    guard JSONSerialization.isValidJSONObject(dictionary) else {
+//      print("Invalid JSON object: \(dictionary)")
+      return "Invalid JSON object: \(dictionary)"
+    }
+    
+    do {
+      let jsonData = try JSONSerialization.data(withJSONObject: dictionary, options: [])
+      return String(data: jsonData, encoding: .utf8)!
+    } catch {
+  
+      return "JSON encode error: \(error)"
+    }
+    
   }
   
 }
 
 
-extension SwiftAmanisdkPlugin: AmaniSDKDelegate {
-  public func onKYCSuccess(CustomerId: Int) {
-      let resultData: [String: Any] = [
-        "isVerificationCompleted": true,
-        "isTokenExpired": false,
-      ]
+extension SwiftAmanisdkPlugin: AmaniUIDelegate {
+  public func onKYCSuccess(CustomerId: String) {
+    let resultData: [String: Any] = [
+      "isVerificationCompleted": true,
+      "isTokenExpired": false,
+    ]
     channel.invokeMethod("onSuccess", arguments: resultToJson(dictionary: resultData))
+    
   }
   
-  public func onKYCFailed(CustomerId: Int, Rules: [[String : String]]?) {
+  public func onKYCFailed(CustomerId: String, Rules: [[String : String]]?) {
     let resultData: [String: Any] = [
       "isVerificationCompleted": false,
       "isTokenExpired": false,
@@ -137,25 +215,25 @@ extension SwiftAmanisdkPlugin: AmaniSDKDelegate {
     ]
     channel.invokeMethod("onSuccess", arguments: resultToJson(dictionary: resultData))
   }
-  
-  public func onTokenExpired() {
-    let resultData: [String: Any] = [
-      "isVerificationCompleted": false,
-      "isTokenExpired": true
-    ]
-    channel.invokeMethod("onSuccess", arguments: resultToJson(dictionary: resultData))
-  }
-  
-  public func onNoInternetConnection() {
-    let resultData: [String: Any] = [
+
+  public func onError(type:String,Error:[AmaniError]){
+    
+    let rulesArray: [[String: Any]] = Error.map { err in
+      return [
+        "error_code": err.error_code ?? 0,
+        "error_message": err.error_message ?? ""
+      ]
+    }
+    
+    let resultData: [String:Any] = [
       "isVerificationCompleted": false,
       "isTokenExpired": false,
+      "rules": rulesArray
     ]
-    channel.invokeMethod("onSuccess", arguments: resultToJson(dictionary: resultData))
+    
+    channel.invokeMethod("onError",arguments: resultToJson(dictionary:resultData))
   }
-  
-  public func onEvent(name: String, Parameters: [String]?, type: String) {
-    // NO-OP
-  }
+
   
 }
+
