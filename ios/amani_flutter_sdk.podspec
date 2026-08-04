@@ -15,8 +15,8 @@ Pod::Spec.new do |s|
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.dependency 'AmaniSDK', '~>3.4.7'
-  s.dependency 'AmaniUI', '~>1.2.4'
+  s.dependency 'AmaniSDK', '~>3.7.2'
+  s.dependency 'AmaniUI', '~>1.4.2'
   s.platform = :ios, '13.0'
 
   # Flutter.framework does not contain a i386 slice.

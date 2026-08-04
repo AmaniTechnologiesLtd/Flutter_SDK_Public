@@ -1,15 +1,17 @@
 PODS:
   - amani_flutter_sdk (0.0.15):
-    - AmaniSDK (~> 3.4.7)
-    - AmaniUI (~> 1.2.4)
+    - AmaniSDK (~> 3.7.2)
+    - AmaniUI (~> 1.4.2)
     - Flutter
-  - AmaniSDK (3.4.21):
+  - AmaniSDK (3.7.2):
     - OpenSSL-Universal (= 1.1.2301)
-  - AmaniUI (1.2.9):
-    - AmaniSDK (~> 3.4)
+  - AmaniUI (1.4.2):
+    - AmaniSDK (~> 3.7)
+    - AmaniVoiceAssistantSDK (~> 1.1.2)
     - lottie-ios (~> 4.5)
+  - AmaniVoiceAssistantSDK (1.1.2)
   - Flutter (1.0.0)
-  - lottie-ios (4.5.2)
+  - lottie-ios (4.6.1)
   - OpenSSL-Universal (1.1.2301)
   - path_provider_foundation (0.0.1):
     - Flutter
@@ -24,8 +26,10 @@ SPEC REPOS:
   https://github.com/AmaniTechnologiesLtd/Mobile_SDK_Repo:
     - AmaniSDK
     - AmaniUI
+    - AmaniVoiceAssistantSDK
   trunk:
     - lottie-ios
+    - OpenSSL-Universal
 
 EXTERNAL SOURCES:
   amani_flutter_sdk:
@@ -36,11 +40,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
 
 SPEC CHECKSUMS:
-  amani_flutter_sdk: a5cab92966049423cfbce2a6ef12f3a7af029ff7
-  AmaniSDK: 5ba8bde5843c160c893a849afc1ee0193d17ae86
-  AmaniUI: 1ac3c3e0d26773c26bdc59ba41db171328411dce
+  amani_flutter_sdk: f6280c6dc3bc3bd5c2d917487644228ad533e280
+  AmaniSDK: cd0308b8b6fd7936cb0a95322672897e3d29428c
+  AmaniUI: a97529272624a4036b1d2fcf70a7da80d3722f87
+  AmaniVoiceAssistantSDK: 51255f28c4060b3418abe3a3125949a649c32bc7
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  lottie-ios: 96784afc26ea031d3e2b6cae342a4b8915072489
+  lottie-ios: 6467ca7035120c5b0e0acee58bb679cf15875686
   OpenSSL-Universal: ca89c20240633a77c776082ba76b7d90f992bf77
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
 
