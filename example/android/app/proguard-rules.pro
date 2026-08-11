@@ -50,3 +50,21 @@
 -dontwarn org.openjsse.javax.net.ssl.SSLParameters
 -dontwarn org.openjsse.javax.net.ssl.SSLSocket
 -dontwarn org.openjsse.net.ssl.OpenJSSE
+
+# ── Offline STT (Vosk) + JNA — reflection & JNI mapped, must not be stripped ──
+-keep class org.vosk.** { *; }
+-keep class com.sun.jna.** { *; }
+-keepclassmembers class * extends com.sun.jna.Structure { *; }
+-dontwarn org.vosk.**
+-dontwarn com.sun.jna.**
+-dontwarn java.awt.**
+
+# ── OkHttp / Okio (Speech Verifier upload + SSE) ──
+-dontwarn okhttp3.**
+-dontwarn okio.**
+-dontwarn org.conscrypt.**
+-dontwarn org.bouncycastle.**
+-dontwarn org.openjsse.**
+
+# ── Speech Verifier Fragment recreated via reflection ──
+-keep class ai.amani.speechverifier.ui.SpeechVerifierFragment { public <init>(...); }

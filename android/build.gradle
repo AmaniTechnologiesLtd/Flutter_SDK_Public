@@ -24,7 +24,7 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 23
     }
 
     buildFeatures {
@@ -46,4 +46,5 @@ android {
 
 dependencies {
     implementation "ai.amani:Android.SDK.UI:1.4.1"
+    implementation 'ai.amani.android:amani-speech-verifier:1.0.0'
 }
