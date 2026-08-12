@@ -52,7 +52,7 @@ android {
 
     defaultConfig {
         applicationId "ai.amani.amanisdk_example"
-        minSdkVersion 21
+        minSdkVersion flutter.minSdkVersion
         targetSdkVersion 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -69,8 +69,8 @@ android {
 
     buildTypes {
         debug {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
 
@@ -104,4 +104,8 @@ android {
 
 flutter {
     source "../.."
+}
+
+dependencies {
+    implementation 'ai.amani.android:amani-speech-verifier:1.0.0'
 }
