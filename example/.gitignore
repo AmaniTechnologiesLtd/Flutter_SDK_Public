@@ -37,6 +37,10 @@ migrate_working_dir/
 # Web related
 lib/generated_plugin_registrant.dart
 
+# Local credentials (never commit real tokens/servers)
+lib/credentials.dart
+lib/credentials.example.dart
+
 # Symbolication related
 app.*.symbols
 
