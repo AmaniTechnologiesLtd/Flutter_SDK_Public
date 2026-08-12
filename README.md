@@ -9,7 +9,7 @@ Before using our sdk you must complete the changes below. Otherwise you might en
 ## Requirements
 
 - iOS 13 or later
-- Android minSDK 21 or later
+- Android minSDK 23 or later
 - Android compileSDKVersion 34
 - Flutter 3.0 or later
 
@@ -50,14 +50,14 @@ Disable R8 full mode, use AndroidX and enable Jetifier like below;
     android.enableJetifier=true
  ```
 
-On the same file, update your minSdkVersion 21 or later
+On the same file, update your minSdkVersion 23 or later
 
 ```dart
 defaultConfig {
         applicationId "ai.amani.flutterexample"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -71,6 +71,27 @@ maven { url 'https://www.jitpack.io' }
 maven {
   url = "https://jfrog.amani.ai/artifactory/amani-sdk"
 }
+```
+
+## Speech Verifier (optional)
+
+The Amani Speech Verifier is declared as a `compileOnly` dependency inside the plugin. This means the plugin compiles against it, but **it is NOT bundled into your app by default.**
+
+- If you are **NOT** using the Speech Verifier feature, you don't need to do anything — skip this section.
+- If you **DO** want to actively use the Speech Verifier, you must add it as an `implementation` dependency in **your own app's** `android/app/build.gradle`, together with its Maven repository. Otherwise the feature will fail at runtime with a missing-class error.
+
+Add the Speech Verifier Maven repository under the repositories section:
+
+```gradle
+maven {
+  url = "https://jfrog.amani.ai/artifactory/amani-speech-verifier"
+}
+```
+
+Then add the dependency in `android/app/build.gradle` under `dependencies`. Always use the latest version below:
+
+```gradle
+implementation 'ai.amani.android:amani-speech-verifier:1.0.0'
 ```
 
 ## Update your AndroidManifest.xml

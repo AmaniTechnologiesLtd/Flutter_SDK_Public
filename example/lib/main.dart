@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:amani_flutter_sdk/amanisdk.dart';
 import 'package:amani_flutter_sdk/sdkresult.dart';
+import 'credentials.dart';
 import 'package:path_provider/path_provider.dart';
 // import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
@@ -46,7 +47,7 @@ class _MyAppState extends State<MyApp> {
                 // _amanisdkPlugin.setSSLPinning(filePath);
                 if(Platform.isAndroid) {
                   await _amanisdkPlugin.setConfigure(
-                  server: "",
+                  server: AmaniCredentials.server,
                   enabledFeatures: const [
                     AmaniAndroidDynamicFeature.idCapture,
                     AmaniAndroidDynamicFeature.idHologramDetection,
@@ -57,8 +58,8 @@ class _MyAppState extends State<MyApp> {
                 );
 
                 final result = await _amanisdkPlugin.startAmaniSDKWithConfigure(
-                  token: "",
-                  id: "",
+                  token: AmaniCredentials.token,
+                  id: AmaniCredentials.id,
                   
                   // geoLocation: true,
                   // lang: "tr",
@@ -68,9 +69,9 @@ class _MyAppState extends State<MyApp> {
 
                 } else {
                     var result = await _amanisdkPlugin.startAmaniSDKWithToken(
-                    server: "",
-                    token: "",
-                    id: "");
+                    server: AmaniCredentials.server,
+                    token: AmaniCredentials.token,
+                    id: AmaniCredentials.id);
                    print(result.isTokenExpired);
                 }
               
